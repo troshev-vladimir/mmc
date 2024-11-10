@@ -1,0 +1,68 @@
+{
+  "name": "vue",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "test": "vue-cli-service build --mode development",
+    "prerender:light": "vue-cli-service build:prerender --max_old_space_size=4096 --without-stock",
+    "prerender": "vue-cli-service build:prerender --max_old_space_size=4096",
+    "lint": "vue-cli-service lint",
+    "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/locales/**/*.json'"
+  },
+  "dependencies": {
+    "axios": "^1.6.2",
+    "core-js": "^3.6.5",
+    "moment": "^2.29.4",
+    "swiper": "^8.3.2",
+    "v-mask": "^2.3.0",
+    "vue": "^2.6.11",
+    "vue-class-component": "^7.2.3",
+    "vue-i18n": "^8.17.3",
+    "vue-meta": "^2.4.0",
+    "vue-property-decorator": "^8.4.2",
+    "vue-router": "^3.2.0",
+    "vue-toasted": "^1.1.28",
+    "vue-unicons": "^3.3.1",
+    "vuetify": "^2.5.0",
+    "vuex": "^3.0.1",
+    "vuex-class": "^0.3.2",
+    "vuex-class-component": "^2.3.6",
+    "vuex-persistedstate": "^4.1.0",
+    "yarn": "^1.22.21"
+  },
+  "devDependencies": {
+    "@dreysolano/prerender-spa-plugin": "^1.0.3",
+    "@intlify/vue-i18n-loader": "^1.0.0",
+    "@typescript-eslint/eslint-plugin": "^2.33.0",
+    "@typescript-eslint/parser": "^2.33.0",
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-plugin-router": "~4.5.0",
+    "@vue/cli-plugin-typescript": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "@vue/eslint-config-typescript": "^5.0.2",
+    "deepmerge": "^4.3.1",
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^6.2.2",
+    "prerender-spa-plugin": "^3.4.0",
+    "prettier": "^2.8.8",
+    "pug": "^3.0.0",
+    "pug-plain-loader": "^1.0.0",
+    "sass": "^1.64.0",
+    "sass-loader": "10.0.0",
+    "tslib": "^1.14.1",
+    "typescript": "~3.9.3",
+    "vue-cli-plugin-i18n": "~1.0.1",
+    "vue-cli-plugin-vuetify": "~2.5.8",
+    "vue-template-compiler": "^2.6.11",
+    "vuetify-loader": "^1.7.0",
+    "webpack-bundle-analyzer": "^4.10.2"
+  },
+  "vuePlugins": {
+    "service": [
+      "build.prerender.js"
+    ]
+  }
+}

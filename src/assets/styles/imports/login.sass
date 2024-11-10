@@ -1,0 +1,89 @@
+@import "../variables"
+
+.login
+  margin-top: 52px
+  margin-bottom: 100px
+
+//.login__cont
+
+.login__caption
+  margin-bottom: 32px
+  text-align: center
+
+.login__form
+  margin: 0 auto
+  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2)
+  border: 1px solid rgba($dark, .3)
+  border-radius: 3px
+  max-width: 416px
+  padding: 26px 32px 13px
+
+.login__field
+  display: block
+  margin-bottom: 20px
+
+.login__input
+  padding: 8px 13px 9px
+
+.login__check
+  position: relative
+  display: inline-block
+  vertical-align: top
+  margin-top: -4px
+  margin-bottom: 29px
+  padding: 4px 4px 4px 38px
+  cursor: pointer
+
+.login__check-input
+  position: absolute
+  opacity: 0
+  &:checked
+    + .login__check-name
+      &::before
+        border-color: $blue
+        background-color: $blue
+      &::after
+        opacity: 1
+
+.login__check-name
+  display: block
+  user-select: none
+  &::before, &::after
+    content: ''
+    position: absolute
+    top: 4px
+    left: 0
+    box-sizing: border-box
+    width: 20px
+    height: 20px
+    border-radius: 2px
+    transition-duration: .1s
+  &::before
+    border: 1px solid $dark
+    transition-property: background-color, border-color
+  &::after
+    opacity: 0
+    +bgIcon('ic_daw_white.svg', 16px, 16px)
+    transition-property: opacity
+
+.login__btn-box
+  margin: 0 auto
+  max-width: 352px
+
+.login__button
+  width: 100%
+  padding: 12px 12px 14px
+
+.login__link-box
+  margin-top: 12px
+  text-align: center
+
+.login__link
+  display: inline-block
+  padding: 8px
+
+.login__or
+  display: block
+  margin-top: 32px
+  margin-bottom: 32px
+  text-align: center

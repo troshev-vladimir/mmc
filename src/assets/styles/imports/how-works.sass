@@ -1,0 +1,67 @@
+@import "../variables"
+
+.how-works
+  margin-bottom: 100px
+
+//.how-works__cont
+
+.how-works__title
+  margin-bottom: 60px
+
+.how-works__list
+  display: flex
+  flex-wrap: wrap
+  margin: 0 -12px
+
+.how-works__item
+  position: relative
+  margin: 0 12px
+  width: calc(20% - 24px)
+  
+  @media screen and (max-width: 940px)
+    width: calc(50% - 24px)
+    margin-bottom: 40px
+
+  @media screen and (max-width: 600px)
+    width: 100%
+
+  &::before
+    content: ''
+    position: absolute
+    z-index: -1
+    top: 106px
+    width: calc(100% + 30px)
+    height: 2px
+    background-color: #333333
+    opacity: 0.2
+    
+    @media screen and (max-width: 600px)
+      width: 100%
+
+.how-works__picture
+  margin-bottom: 16px
+
+.how-works__image
+  width: 80px
+  height: 80px
+
+.how-works__number
+  display: block
+  margin-bottom: 12px
+  border-radius: 50%
+  width: 20px
+  padding: 1px 0 2px
+  background-color: #333333
+  text-align: center
+  font-weight: 400
+  font-size: 14px
+  line-height: 17px
+  color: $fc_white
+
+.how-works__headline
+  margin-bottom: 12px
+  font-weight: 400
+
+.subtitle__text
+  line-height: 20px
+  color: #76767A

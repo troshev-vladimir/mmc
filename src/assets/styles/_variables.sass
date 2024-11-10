@@ -1,0 +1,48 @@
+$white: #ffffff
+$black: #000
+$dark: #333
+$red: #E52E2E
+$green: #26A669
+$yellow: #FF9500
+$blue: #177EC9
+$blue-hover: #0050B2
+$grey: #BFBFBF
+$grey-light: #F5F5F7
+$grey-dark: #A7A7AB
+$grey-dark-hover: #76767A
+
+$fc_white: $white
+$fc_black: $black
+$fc_dark: $dark
+$fc_red: $red
+$fc_green: $green
+$fc_yellow: $yellow
+$fc_blue: $blue
+$fc_blue-hover: $blue-hover
+$fc_grey-light: $grey-light
+$fc_grey-dark: $grey-dark
+$fc_grey-dark-hover: $grey-dark-hover
+
+// bp 1200, 950, 700, 520
+@mixin media($bp-size)
+  @media (max-width: $bp-size + px)
+    @content
+
+@mixin media_min($bp-size)
+  @media (min-width: $bp-size + 0.1 + px)
+    @content
+
+@mixin hover
+  @include media_min(1200)
+    @content
+
+$imgPath: '/img/'
+
+@mixin bgImg($img)
+  background-image: url($imgPath + $img)
+
+@mixin bgIcon($img, $w: 100%, $h: 100%)
+  background-image: url($imgPath + $img)
+  background-size: $w $h
+  background-repeat: no-repeat
+  background-position: center center

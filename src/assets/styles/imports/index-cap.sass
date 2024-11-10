@@ -1,0 +1,136 @@
+@import "../variables"
+
+.index-cap
+  position: relative
+  margin-bottom: 30px
+  background-color: #222
+  @media screen and ( min-width: 768px ) 
+    background-image: url(/img/index-cap/bg.webp)
+    background-size: cover
+  .button_accent
+    margin-top: 24px
+    padding: 12px 0
+    margin-bottom: 10px
+    width: 100%
+    font-weight: 700
+    border-radius: 5px
+    font-size: 14px
+
+  &__link 
+    font-weight: 400
+    font-size: 12px
+    text-decoration-line: underline
+    color: #76767A
+    cursor: pointer
+
+  .defined-wrapper 
+    display: flex
+    flex-wrap: wrap
+
+  .defined-item 
+    flex: 1 0 33%
+    padding: 5px 10px
+    min-width: 130px
+
+  .defined
+    display: flex
+    text-decoration: none
+    padding: 5px 10px
+    background-color: #ccc
+    border-radius: 4px
+    text-align: center
+    font-weight: 700
+    align-items: center
+    justify-content: center
+    height: 40px
+    &:hover 
+      background-color: #ddd
+
+    img 
+      display: inline-block
+      margin-left: 10px
+
+
+  &__btn-box
+    button
+      display: block
+    text-align: center
+
+  &__title 
+    margin-bottom: 16px
+    display: flex
+    flex-direction: column
+    .accent-text
+      margin-bottom: 0
+      color: #E31E24
+
+
+
+.index-cap__cont
+  display: flex
+  padding: 20px
+  align-items: center
+
+  @media (max-width: 768px)
+    flex-direction: column
+
+.index-cap__info
+  flex-grow: 1
+  margin-right: 110px
+  @media (max-width: 870px)
+    margin-right: 20px
+  @media (max-width: 600px)
+    margin-bottom: 30px
+
+.index-cap__caption
+  margin-bottom: 16px
+  color: $fc_white
+  font-weight: 700
+  font-size: 38px
+  line-height: 130%
+  @media (max-width: 870px)
+    font-size: 20px
+    line-height: 1.4em
+    text-align: left
+
+.index-cap__lid
+  color: rgba($fc_white, .75)
+  font-weight: 500
+  font-size: 23px
+  line-height: 130%
+  text-transform: uppercase
+  color: #FFFFFF
+  @media (min-width: 50px) and (max-width: 870px)
+    text-align: left
+    font-weight: 500
+    font-size: 18px
+    line-height: 120%
+    text-transform: none
+    
+.index-cap__car
+  flex-shrink: 0
+  box-shadow: 0 5px 6px rgba(0, 0, 0, 0.2)
+  border-radius: 4px
+  max-width: 45%
+  padding: 24px 28px 32px
+  background-color: $white
+  @media (min-width: 50px) and (max-width: 768px)
+    margin-bottom: 10px
+    width: 100%
+    max-width: 100%
+    padding: 14px
+  @media (max-width: 600px)
+    width: 100%
+.index-cap__field
+  display: block
+
+.index-cap__name
+  display: block
+  margin-bottom: 8px
+
+.index-cap__select
+  padding: 8px 12px
+
+.index-cap__button
+  width: 100%
+  padding: 12px 12px 14px

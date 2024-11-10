@@ -1,0 +1,89 @@
+@import "../variables"
+
+.modal-note
+  position: fixed
+  top: 0
+  right: 0
+  bottom: 0
+  left: 0
+  z-index: 100
+
+.modal-note__area
+  position: relative
+  z-index: 1
+  height: 100vh
+  display: flex
+  align-items: center
+
+.modal-note__layer
+  position: absolute
+  top: 0
+  right: 0
+  bottom: 0
+  left: 0
+  z-index: 1
+  background-color: rgba(196, 196, 196, .7)
+  cursor: pointer
+
+.modal-note__box
+  position: relative
+  z-index: 1
+  margin: 0 auto
+  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2)
+  border-radius: 5px
+  width: 522px
+  padding-bottom: 26px
+  background-color: $white
+
+.modal-note__head
+  display: flex
+  align-items: center
+  justify-content: center
+  padding: 24px
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1)
+
+.modal-note__head_error
+  background-color: $red
+  .modal-note__head-text
+    &::before
+      +bgImg('ic_close_white.svg')
+
+.modal-note__head_done
+  background-color: $green
+  .modal-note__head-text
+    &::before
+      +bgImg('ic_daw_white.svg')
+
+.modal-note__head-text
+  position: relative
+  display: inline-block
+  padding-left: 80px
+  color: $fc_white
+  &::before
+    content: ''
+    position: absolute
+    top: 50%
+    left: 20px
+    margin-top: -16px
+    width: 32px
+    height: 32px
+    background-repeat: no-repeat
+    background-size: 100%
+
+.modal-note__body
+  margin-top: 32px
+  padding: 0 36px
+  text-align: center
+
+//.modal-note__body-text
+
+.modal-note__btn-box
+  display: flex
+  justify-content: center
+  margin-top: 32px
+  padding: 0 32px
+
+.modal-note__button
+  margin: 0 10px
+  min-width: 162px
+  padding: 12px 22px 14px

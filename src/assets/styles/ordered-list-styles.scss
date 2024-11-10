@@ -1,0 +1,12 @@
+ol.base-ordered-list {
+  padding-left: 20px !important;
+
+  li {
+    list-style-type: decimal !important;
+    margin-bottom: 8px !important;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}

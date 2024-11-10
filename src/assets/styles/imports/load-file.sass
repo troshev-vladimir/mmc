@@ -1,0 +1,105 @@
+@import "../variables"
+
+.load-file
+  margin-top: 32px
+  border: 1px solid rgba($dark, .3)
+  border-radius: 2px
+  padding: 24px 28px 28px
+
+.load-file_disabled
+  .load-file__field
+    pointer-events: none
+  .load-file__button
+    color: $fc_grey-dark
+    border-color: $grey-dark
+
+.load-file__zone
+  position: fixed
+  top: 0
+  left: 0
+  z-index: -10
+  display: flex
+  align-items: center
+  justify-content: center
+  opacity: 0
+  height: 100%
+  width: 100%
+  background-color: rgba($dark, .3)
+  user-select: none
+  &::before
+    content: ''
+    position: absolute
+    top: 56px
+    right: 46px
+    bottom: 112px
+    left: 45px
+    border: 9px dashed $white
+
+.load-file__zone_active
+  z-index: 10
+  opacity: 1
+  transition-property: opacity
+  transition-duration: .1s
+
+.drag-zone__zone-text
+  display: block
+  margin-bottom: 20px
+  color: $fc_white
+
+.load-file__text
+  display: block
+  margin-bottom: 6px
+
+.load-file__done
+  float: right
+  width: 30px
+  height: 30px
+  +bgIcon('ic_check_green.svg')
+
+.load-file__field
+  position: relative
+  display: block
+  margin-top: 9px
+  border: 1px solid rgba($dark, .3)
+  padding: 31px 32px 38px
+  text-align: center
+  cursor: pointer
+
+.load-file__input
+  position: absolute
+  opacity: 0
+  z-index: -1
+
+.load-file__button
+  margin-bottom: 12px
+  padding: 13px 23px
+  font-size: 16px
+  font-weight: 600
+  line-height: 18px
+
+.load-file__note
+  display: block
+  font-size: 16px
+  line-height: 19px
+  color: rgba($fc_dark, .6)
+  word-break: break-all
+
+.load-file__progress
+  position: absolute
+  bottom: 10px
+  right: 20px
+  left: 20px
+  border: 1px solid rgba($dark, .3)
+  padding: 1px 0 2px
+
+.load-file__progress-value
+  display: block
+
+.load-file__progress-line
+  position: absolute
+  z-index: -1
+  top: 0
+  left: 0
+  bottom: 0
+  width: 0
+  background-color: rgba($blue, .3)

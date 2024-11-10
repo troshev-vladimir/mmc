@@ -1,0 +1,155 @@
+@import "../variables"
+
+.modal-stock
+  position: fixed
+  top: 0
+  right: 0
+  bottom: 0
+  left: 0
+  z-index: 100
+
+.modal-stock__frame
+  position: fixed
+  width: 100vw
+  height: 100vh
+  z-index: 100000
+
+.modal-stock__area
+  position: relative
+  z-index: 1
+  height: 100vh
+  display: flex
+  align-items: center
+
+.modal-stock__layer
+  position: absolute
+  top: 0
+  right: 0
+  bottom: 0
+  left: 0
+  z-index: 1
+  background-color: rgba(196, 196, 196, .7)
+  cursor: pointer
+
+.modal-stock__form
+  padding: 32px 48px 40px
+  background-color: $white
+
+.modal-stock__close
+  position: absolute
+  top: 0
+  right: 0
+  border: none
+  height: 40px
+  width: 40px
+  background-color: transparent
+  +bgIcon('ic_close_dark.svg', 16px, 16px)
+  @include hover
+    transition-property: opacity
+    transition-duration: .2s
+  &:hover
+    @include hover
+      opacity: .8
+      transition-duration: .1s
+
+.modal-stock__title
+  display: block
+  margin-bottom: 14px
+
+.modal-stock__model
+  display: block
+  margin-bottom: 42px
+
+.modal-stock__head
+  display: block
+  margin-bottom: 8px
+  border-bottom: 1px solid rgba($black, .2)
+  padding-bottom: 6px
+  color: rgba($black, .6)
+
+.modal-stock__body
+  display: flex
+  margin-bottom: 39px
+
+.modal-stock__list
+  max-height: 300px
+  overflow: auto
+
+.modal-stock__item
+  display: flex
+  margin-bottom: 8px
+
+.modal-stock__name
+  flex-grow: 1
+  display: block
+  font-size: 16px
+  line-height: 20px
+
+.modal-stock__price
+  display: block
+  margin-left: 20px
+  white-space: nowrap
+  font-size: 16px
+  line-height: 20px
+
+.modal-stock__line
+  display: flex
+  align-items: center
+
+.modal-stock__check
+  position: relative
+  display: block
+  cursor: pointer
+
+.modal-stock__check-input
+  position: absolute
+  opacity: 0
+  &:checked
+    ~ .modal-stock__check-box
+      border-color: $blue
+      background-color: $blue
+      &::before
+        opacity: 1
+
+.modal-stock__check-box
+  position: relative
+  display: block
+  margin-right: 8px
+  height: 20px
+  width: 20px
+  border-radius: 2px
+  border: 1px solid $dark
+  transition-property: background-color, border-color
+  transition-duration: .1s
+  &::before
+    content: ''
+    position: absolute
+    top: 0
+    left: 0
+    box-sizing: border-box
+    width: 18px
+    height: 18px
+    border-radius: 2px
+    transition-duration: .1s
+    opacity: 0
+    +bgIcon('ic_daw_white.svg', 14px, 14px)
+    transition-property: opacity
+
+.modal-stock__policy
+  flex-grow: 1
+
+.modal-stock__total
+  white-space: nowrap
+  margin-top: 40px
+  display: block
+
+.modal-stock__btn-box
+  margin-top: 40px
+  display: flex
+  align-items: center
+  &>*:not(:first-child)
+    margin-left: 20px
+    
+.modal-stock__button
+  width: 100%
+  padding: 13px 12px

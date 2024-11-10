@@ -1,0 +1,49 @@
+@import "../variables"
+
+.news
+  margin-top: 52px
+  margin-bottom: 70px
+
+//.news__cont
+
+.news__head
+  display: flex
+  align-items: baseline
+  margin-bottom: 13px
+
+  @media screen and (max-width: 600px) 
+    flex-direction: column
+    gap: 20px
+
+.news__caption
+  margin-right: 26px
+
+.news__filter-item
+  display: inline-block
+  padding: 12px
+
+.news__count
+  flex-grow: 1
+  display: inline-block
+  text-align: right
+  color: rgba($fc_dark, .6)
+
+.news__list
+  display: grid
+  grid-template-columns: repeat(3, 1fr)
+  gap: 20px
+
+  @media screen and (max-width: 940px) 
+    grid-template-columns: repeat(2, 1fr)
+
+  @media screen and (max-width: 600px) 
+    grid-template-columns: repeat(1, 1fr)
+
+.news__item
+  width: 100%
+  flex: 1 1 auto
+
+.news__more
+  color: $fc_blue
+
+//.news__pagination

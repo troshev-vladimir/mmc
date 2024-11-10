@@ -1,0 +1,61 @@
+.cage
+  margin-top: 52px
+  margin-bottom: 100px
+  position: relative
+
+//.cage__cont
+
+.cage__caption-box
+  display: flex
+  margin-bottom: 20px
+
+.cage__caption
+  margin-bottom: 20px
+
+.cage__caption_fix-width
+  margin-right: 32px
+  margin-bottom: 0
+  width: 352px
+
+.cage__area
+  display: flex
+
+  @media screen and (max-width:940px) 
+    flex-direction: column
+    row-gap: 30px
+
+.cage__sidebar
+  flex-shrink: 0
+  margin-right: 32px
+  width: 352px
+
+  @media screen and (max-width:940px) 
+    width: 100%
+    margin-right: 0
+
+.cage__body
+  position: relative
+  z-index: 1
+  width: 736px
+
+  @media screen and (max-width:940px) 
+    width: 100%
+
+.cage__manual-order
+  margin-top: 32px
+
+.cage__body_drag
+  +bgIcon('ic_drag_gray.svg', 144px, 144px)
+
+.cage__total-wrap
+  display: flex
+  & > *
+    flex-basis: 50%
+    flex-grow: 1
+  //display: grid
+  //grid-template-columns: 1fr 1fr
+  grid-gap: 10px
+  margin-top: 32px
+
+.cage__leave-request
+  margin-top: 36px

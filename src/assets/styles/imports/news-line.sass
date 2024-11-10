@@ -1,0 +1,44 @@
+.news-line
+  overflow: hidden
+  margin-bottom: 50px
+
+//.news-line__cont
+
+.news-line__title
+  margin-bottom: 20px
+
+.news-line__area
+  position: relative
+
+.news-line__button
+  position: absolute
+  top: 0
+  bottom: 32px
+  border: none
+  background-color: transparent
+  width: 60px
+  &::before
+    content: ''
+    position: absolute
+    top: 50%
+    margin-top: -20px
+    +bgIcon('ic_arrow-down_dark.svg')
+    width: 40px
+    height: 40px
+
+.news-line__button_prev
+  right: 100%
+  &::before
+    left: 0
+    transform: rotate(90deg)
+
+.news-line__button_next
+  left: 100%
+  &::before
+    right: 0
+    transform: rotate(-90deg)
+
+.news-line__list
+  display: flex
+  margin: 0 -16px
+  overflow: hidden

@@ -1,0 +1,142 @@
+@import "../variables"
+
+.dtc
+  margin-top: 32px
+  border: 1px solid rgba($dark, .3)
+  border-radius: 2px
+  padding: 17px 28px 16px 20px
+  background-color: $white
+
+.dtc__head
+  display: flex
+  margin-bottom: 22px
+
+.dtc__head-name
+  flex-grow: 1
+
+.dtc__head-count
+  color: rgba($fc_dark, .6)
+
+.dtc__area
+  display: flex
+  align-items: center
+  margin: 0 -6px 14px
+
+  @media screen and (max-width: 600px) 
+    flex-direction: column
+    row-gap: 10px
+
+.dtc__box
+  position: relative
+  margin: 0 6px
+  width: calc(50% - 12px)
+  padding: 0 16px 0 48px
+
+  @media screen and (max-width: 600px) 
+    width: 100%
+
+  &::before
+    content: ''
+    opacity: 1
+    position: absolute
+    top: 50%
+    left: 0
+    margin-top: -16px
+    width: 32px
+    height: 32px
+    background-repeat: no-repeat
+    background-size: 100%
+
+.dtc__box_price
+  &::before
+    +bgImg('ic_wallet.svg')
+
+.dtc__box_action
+  &::before
+    +bgImg('ic_warning.svg')
+
+.dtc__text
+  display: block
+
+.dtc__field
+  position: relative
+  margin-bottom: 13px
+
+.dtc__input
+  padding: 11px 20px 12px
+
+.dtc__list
+  position: absolute
+  top: 100%
+  left: 0
+  right: 0
+  z-index: 1
+  margin-top: -1px
+  border: 1px solid rgba($dark, .3)
+  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2)
+  background-color: $white
+
+.dtc__item
+  padding: 1px 10px
+  user-select: none
+  cursor: pointer
+  &:hover
+    @include hover
+      background-color: $blue
+      color: $fc_white
+
+.dtc__item_active
+  background-color: $blue
+  color: $fc_white
+
+.dtc__footer
+  display: flex
+
+.dtc__footer-list
+  flex-grow: 1
+  margin-right: 12px
+  font-size: 12px
+  line-height: 14px
+  color: rgba($fc_dark, .6)
+
+.dtc__footer-note
+  display: inline-block
+  vertical-align: top
+  margin-right: 3px
+
+.dtc__footer-item
+  position: relative
+  display: inline-block
+  vertical-align: top
+  margin-right: 25px
+  cursor: pointer
+  &::before
+    content: ''
+    position: absolute
+    top: 0
+    right: -16px
+    margin-left: -7px
+    opacity: 1
+    border-radius: 50%
+    width: 14px
+    height: 14px
+    background-color: $red
+    +bgIcon('ic_close_white.svg', 6px, 6px)
+    @include hover
+      transition-property: opacity
+      transition-duration: .1s
+  &:not(:last-child)
+    &::after
+      position: absolute
+      top: 0
+      right: -20px
+      content: ','
+
+.dtc__footer-price
+  flex-shrink: 0
+  display: block
+  text-align: right
+  margin-top: 6px
+  font-size: 12px
+  line-height: 14px
+  color: rgba($fc_dark, .8)

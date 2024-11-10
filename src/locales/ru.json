@@ -1,0 +1,15 @@
+{
+  "type": "Тип транспорта",
+  "brand": "Бренд",
+  "model": "Модель",
+  "engine": "Двигатель",
+  "ecu": "Тип ECU",
+  "error": "Ошибка",
+  "prevPage": "Предыдущая страница",
+  "nextPage": "Следующая страница",
+  "somethingWentWrong": "Что-то пошло не так.",
+  "shouldAuth": "Авторизуйтесь",
+  "errorAuth": "Вы не автризовались",
+  "goAuth": "Авторизоваться",
+  "mainLink": "mmcflash.ru"
+}

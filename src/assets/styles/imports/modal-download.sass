@@ -1,0 +1,121 @@
+@import "../variables"
+
+.modal-download
+  position: fixed
+  top: 0
+  right: 0
+  bottom: 0
+  left: 0
+  z-index: 100
+
+.modal-download__area
+  position: relative
+  height: 100vh
+  display: flex
+  align-items: center
+
+.modal-download__layer
+  position: absolute
+  top: 0
+  right: 0
+  bottom: 0
+  left: 0
+  z-index: 1
+  background-color: rgba(196, 196, 196, .7)
+  cursor: pointer
+
+.modal-download__box
+  position: relative
+  z-index: 1
+  margin: 0 auto
+  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2)
+  overflow: hidden
+  border-radius: 5px
+  width: 800px
+  padding-bottom: 40px
+  background-color: $white
+
+.modal-download__head
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1)
+  padding: 27px 30px 30px 94px
+  background-color: $green
+  +bgImg('ic_daw_white.svg')
+  background-repeat: no-repeat
+  background-position: 48px 23px
+  background-size: 36px
+
+.modal-download__header-text
+  font-size: 24px
+  font-weight: 600
+  line-height: 29px
+  color: $fc_white
+
+.modal-download__body
+  padding: 36px 48px 40px
+
+//.modal-download__download
+
+.modal-download__download-title
+  display: block
+  margin-bottom: 16px
+
+.modal-download__download-line
+  display: flex
+  align-items: flex-start
+  margin-bottom: 10px
+
+.modal-download__download-field
+  flex-grow: 1
+  display: block
+  margin-right: 16px
+
+.modal-download__download-input
+  border: 1px solid rgba($dark, .1)
+  border-radius: 5px
+  width: 100%
+  background-color: rgba($dark, .04)
+  padding: 11px 12px
+  color: $fc_blue
+
+//.modal-download__download-box
+
+.modal-download__download-button
+  padding: 10px 20px 11px
+  font-size: 16px
+  line-height: 19px
+
+.modal-download__download-note
+  color: rgba($fc_dark, .6)
+
+.modal-download__title
+  display: flex
+  align-items: baseline
+  margin-top: 31px
+  margin-bottom: 11px
+
+.modal-download__title-name
+  flex-grow: 1
+  display: block
+
+.modal-download__title-count
+  display: block
+  flex-shrink: 0
+  white-space: nowrap
+  color: rgba($fc_dark, .6)
+
+.modal-download__list
+  max-height: 160px
+  overflow-y: auto
+  overflow-x: hidden
+
+.modal-download__item
+  position: relative
+  border-bottom: 1px solid rgba($dark, .6)
+  padding: 9px 36px 10px 12px
+
+.modal-download__btn-box
+  text-align: center
+
+.modal-download__button
+  min-width: 162px
+  padding: 12px 32px 14px

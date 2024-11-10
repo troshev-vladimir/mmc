@@ -1,0 +1,12 @@
+ul.base-unordered-list {
+  padding-left: 20px !important;
+
+  li {
+    list-style-type: disc !important;
+    margin-bottom: 8px !important;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}

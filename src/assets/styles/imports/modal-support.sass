@@ -1,0 +1,52 @@
+@import "../variables"
+
+.modal-support
+  position: fixed
+  top: 0
+  right: 0
+  bottom: 0
+  left: 0
+  z-index: 100
+
+.modal-support__area
+  position: relative
+  z-index: 1
+  height: 100vh
+  display: flex
+  align-items: center
+
+.modal-support__layer
+  position: absolute
+  top: 0
+  right: 0
+  bottom: 0
+  left: 0
+  z-index: 1
+  background-color: hsla(196, 196, 196, .7)
+  cursor: pointer
+
+.modal-support__box
+  position: relative
+  z-index: 1
+  margin: 0 auto
+  box-shadow: 3px 3px 3px hsla(0, 0, 0, 0.2)
+  border-radius: 5px
+  width: 522px
+  padding-bottom: 26px
+  background-color: $white
+  padding: 30px 30px 20px 30px
+
+.modal-support__select
+  padding: 8px 13px 9px
+  margin-bottom: 20px
+
+.modal-support__textarea
+  height: 150px
+  resize: none
+  margin-bottom: 20px
+  padding: 10px
+
+.modal-support__button
+  display: block
+  padding: 5px 10px 6px
+  margin: 0 auto

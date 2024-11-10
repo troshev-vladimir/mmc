@@ -1,0 +1,15 @@
+{
+  "type": "Transport type",
+  "brand": "Brand",
+  "model": "Model",
+  "engine": "Engine",
+  "ecu": "ECU type",
+  "error": "Error",
+  "prevPage": "Previous page",
+  "nextPage": "Next page",
+  "somethingWentWrong": "Something went wrong",
+  "shouldAuth": "Authorization required",
+  "errorAuth": "Error! Unauthorized",
+  "goAuth": "Authorize",
+  "mainLink": "mmcflash.eu"
+}

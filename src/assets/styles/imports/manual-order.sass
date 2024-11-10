@@ -1,0 +1,39 @@
+@import "../variables"
+
+.manual-order
+  border: 1px solid rgba($dark, .3)
+  border-radius: 2px
+  padding: 18px 28px 18px
+  background-color: $white
+  pointer-events: auto
+
+.manual-order_full
+  display: flex
+  justify-content: space-between
+  align-items: center
+  .manual-order__button-box
+    margin-left: 24px
+    flex: 1 0 auto
+  .manual-order__text
+    position: relative
+    margin-bottom: 0
+  
+  @media screen and (max-width: 600px) 
+    flex-direction: column
+    .manual-order__button
+      margin-top: 16px
+
+.manual-order__text
+  margin-bottom: 12px
+
+.manual-order__button-box
+  display: flex
+  justify-content: center
+
+.manual-order__button
+  background-color: #E31E24
+  flex-shrink: 0
+  padding: 5px 10px 5px
+  &:hover
+    background-color: #9b2327
+ 

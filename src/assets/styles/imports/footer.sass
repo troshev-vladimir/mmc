@@ -1,0 +1,35 @@
+@import "../variables"
+
+.footer
+  background-color: $dark
+
+.footer__cont
+  display: flex
+
+.footer__note
+  flex-grow: 1
+  display: inline-block
+  vertical-align: top
+  padding: 23px 0
+  text-transform: uppercase
+  font-size: 12px
+  line-height: 14px
+  color: $fc_white
+
+.footer__menu
+  display: flex
+  margin-right: -16px
+  @media (min-width: 50px) and (max-width: 1199.98px)
+    flex-wrap: wrap
+
+.footer__link
+  display: inline-block
+  vertical-align: top
+  padding: 23px 16px
+  font-size: 12px
+  line-height: 14px
+  color: $fc_white
+  @media (min-width: 50px) and (max-width: 1199.98px)
+    padding: 16px 8px 0 8px
+  &.router-link-active
+    cursor: default

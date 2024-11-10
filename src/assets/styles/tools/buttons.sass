@@ -1,0 +1,56 @@
+@mixin button
+  display: inline-block
+  vertical-align: top
+  border: none
+  border-radius: 5px
+  text-align: center
+  text-decoration: none
+  font-weight: 700
+  cursor: pointer
+  @include hover
+    transition-property: background-color, color, opacity
+    transition-duration: .2s
+  &:not(:disabled):hover
+    @include hover
+      transition-duration: .1s
+  &:disabled
+    background-color: rgba($dark, .4)
+    cursor: default
+
+@mixin button-outline
+  +button
+  border: 1px solid transparent
+
+.button_blue
+  +button
+  background-color: #177EC9
+  color: $fc_white !important
+  &:not(:disabled):hover
+    @include hover
+      opacity: .9
+
+.v-application .button_blue 
+  color: $fc_white 
+
+.button_black
+  +button
+  background-color: $dark
+  color: $fc_white !important
+  font-size: 18px
+  font-weight: 400
+  &:not(:disabled):hover
+    @include hover
+      opacity: .9
+
+.button_white
+  +button
+  background-color: $white
+  color: $fc_blue
+
+.button-outline_blue
+  +button-outline
+  border-color: $blue
+  color: $fc_blue
+  &:not(:disabled):hover
+    @include hover
+      opacity: .7

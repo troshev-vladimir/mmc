@@ -1,0 +1,78 @@
+@import "../variables"
+
+.pagination
+  $root: &
+  display: flex
+  justify-content: center
+  
+  &__list
+    display: flex
+    align-items: center
+    
+    font-weight: 500
+    line-height: 17px  
+    list-style-type: none  
+    flex-wrap: wrap
+
+    #{$root}__item 
+      font-size: 14px
+
+    #{$root}__arrow
+      position: relative
+      display: inline-block
+      vertical-align: top
+      overflow: hidden
+      padding: 3px 2px
+      text-decoration: none
+      font-weight: 600
+      line-height: 17px
+      font-size: 20px
+      color: $fc_blue  
+      &::before 
+        display: none
+      &_prev
+        margin-right: 15px
+      &_next
+        margin-left: 15px
+      &_link 
+        padding: 8px
+        text-decoration: none
+        color: $black !important
+        border-radius:100%
+        &:hover
+            opacity:.7
+
+.pagination__item  
+  display: flex
+  align-items: center
+  margin: 5px 0px
+  list-style: none
+  &::before 
+    display: none
+
+.pagination__link
+  display: flex
+  justify-content: center
+  align-items: center
+  padding: 6px 10px
+  text-decoration: none
+  color: $black !important
+  border-radius: 10%
+  border: 1px solid $grey-dark-hover
+  &:not(&_active)
+    &:hover
+      background-color:$black
+      color: #fff !important
+      border: 1px solid $black
+      opacity:.2  
+  &_active
+    cursor: default
+    color: #fff !important
+    background-color:$blue
+    border: 1px solid $blue
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12)
+    transition: all .2s linear
+
+.pagination__dot
+  padding: 2px
+  color: $blue

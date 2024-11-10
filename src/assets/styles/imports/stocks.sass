@@ -1,0 +1,73 @@
+@import "../variables"
+
+.stocks
+  margin-top: 52px
+  margin-bottom: 70px
+
+//.stocks__cont
+
+.stocks__head
+  display: flex
+  align-items: baseline
+  margin-bottom: 20px
+
+.stocks__caption
+  flex-grow: 1
+
+//.stocks__count
+
+.stocks__filter
+  display: flex
+  align-items: flex-start
+  margin: 0 -16px 36px
+
+.stocks__filter-item
+  display: inline-block
+  vertical-align: top
+  margin: 0 16px
+  width: 192px
+
+.stocks__filter-name
+  display: block
+  margin-bottom: 15px
+
+.stocks__filter-field
+  display: block
+
+.stocks__filter-select
+  width: 100%
+  padding: 7px 20px 9px 14px
+
+.stocks__filter-search
+  flex-grow: 1
+  position: relative
+  display: inline-block
+  vertical-align: top
+  margin: 8px 16px 0
+  &::before
+    content: ''
+    position: absolute
+    top: 15px
+    left: 11px
+    width: 28px
+    height: 28px
+    +bgIcon('ic_loupe_dark.svg')
+    opacity: .3
+
+.stocks__filter-input
+  padding: 18px 16px 19px 52px
+
+.stocks__list
+  margin-bottom: 17px
+  column-count: 3
+  column-gap: 12px
+
+//.stocks__item
+
+.stocks__link
+  display: inline-block
+  vertical-align: top
+  padding: 3px 16px
+  white-space: nowrap
+
+//.stocks__pagination

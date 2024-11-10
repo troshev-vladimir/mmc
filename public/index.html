@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="<%= BASE_URL %>img/favicon/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="<%= BASE_URL %>img/favicon/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="<%= BASE_URL %>img/favicon/favicon-16x16.png"
+    />
+    <link rel="manifest" href="<%= BASE_URL %>img/favicon/site.webmanifest" />
+    <meta name="application-name" content="MMC Flash" />
+    <meta
+      name="msapplication-TileImage"
+      content="<%= BASE_URL %>img/favicon/mstile-144x144.png"
+    />
+    <meta
+      name="msapplication-square70x70logo"
+      content="<%= BASE_URL %>img/favicon/mstile-70x70.png"
+    />
+    <meta
+      name="msapplication-square150x150logo"
+      content="<%= BASE_URL %>img/favicon/mstile-150x150.png"
+    />
+    <meta
+      name="msapplication-square310x310logo"
+      content="<%= BASE_URL %>img/favicon/mstile-310x310.png"
+    />
+    <meta name="google-site-verification" content="yJABSKqsEJpbQjFsuzXCfMva9BgMEnSjLy_a9usSNrM" />
+    <link rel="icon" href="<%= BASE_URL %>img/favicon/favicon.ico" />
+    <link rel="preconnect" href="https://api.mmcflash.ru:8888">
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+  </head>
+  <body>
+    <div id="app"></div>
+    <!-- <script type="text/javascript" src="./robokassa_iframe.js"></script> -->
+    <script>
+      document.addEventListener('RobocassaLoad', () => {
+        console.log('RobocassaLoad');
+        let script = document.createElement('script');
+        script.src = "https://auth.robokassa.ru/Merchant/bundle/robokassa_iframe.js";
+        script.type = "text/javascript";
+        document.head.append(script);
+      })
+    </script>
+
+    <script>
+      document.addEventListener('CryptocloudAndPaypallLoad', () => {
+        console.log('CryptocloudAndPaypallLoad');
+        let script1 = document.createElement('script');
+        script1.src = "https://api.cryptocloud.plus/static/pay_btn/js/app.js";
+        script1.type = "text/javascript";
+        document.head.append(script1);
+
+        let script2 = document.createElement('script');
+        script2.src = "https://www.paypal.com/sdk/js?client-id=AVPoG3IwC4E275_UE9Z1KGguDQ6U53881VhtBNpLeacFQD7OydTQpgpwOtzzThzWGJ59Ge98Y-IEdwnu&components=buttons&enable-funding=paylater,venmo,card&debug=true";
+        script2.type = "text/javascript";
+        document.head.append(script2);
+      })
+    </script>
+
+    <script type="text/javascript">
+      let fired = false;
+      const initNumber = window.location.href.includes(".ru") ? 95235297 : 96808893
+
+      document.addEventListener('DOMContentLoaded', () => {
+        if (fired === false) {
+          fired = true;
+          setTimeout(() => { 
+            console.log('metrika');
+            let gtagScript = document.createElement('script');
+            gtagScript.src = "https://www.googletagmanager.com/gtag/js?id=AW-11431760274";
+            gtagScript.type = "text/javascript";
+            document.head.append(gtagScript);
+
+            if (window.location.href.includes(".eu")) {
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'AW-11431760274');
+            }
+
+            // <!-- Yandex.Metrika counter -->
+            (function (m, e, t, r, i, k, a) {
+              m[i] =
+                m[i] ||
+                function () {
+                  (m[i].a = m[i].a || []).push(arguments);
+                };
+              m[i].l = 1 * new Date();
+              for (var j = 0; j < document.scripts.length; j++) {
+                if (document.scripts[j].src === r) {
+                  return;
+                }
+              }
+              (k = e.createElement(t)),
+                (a = e.getElementsByTagName(t)[0]),
+                (k.async = 1),
+                (k.src = r),
+                a.parentNode.insertBefore(k, a);
+            })(
+              window,
+              document,
+              "script",
+              "https://mc.yandex.ru/metrika/tag.js",
+              "ym"
+            );
+
+            ym(initNumber, "init", {
+              clickmap: true,
+              trackLinks: true,
+              accurateTrackBounce: true,
+              webvisor: true,
+            });
+            // <!-- /Yandex.Metrika counter -->
+
+            // <!-- Meta Pixel Code -->
+            !(function (f, b, e, v, n, t, s) {
+              if (f.fbq) return;
+              n = f.fbq = function () {
+                n.callMethod
+                  ? n.callMethod.apply(n, arguments)
+                  : n.queue.push(arguments);
+              };
+              if (!f._fbq) f._fbq = n;
+              n.push = n;
+              n.loaded = !0;
+              n.version = "2.0";
+              n.queue = [];
+              t = b.createElement(e);
+              t.async = !0;
+              t.src = v;
+              s = b.getElementsByTagName(e)[0];
+              s.parentNode.insertBefore(t, s);
+            })(
+              window,
+              document,
+              "script",
+              "https://connect.facebook.net/en_US/fbevents.js"
+            );
+            fbq("init", "728588242655188");
+            fbq("track", "PageView");
+          }, 3000)
+        }
+      });
+      // <!-- End Meta Pixel Code -->
+      !(function () {
+        var t = document.createElement("script");
+        (t.type = "text/javascript"),
+          (t.async = !0),
+          (t.src = "https://vk.com/js/api/openapi.js?169"),
+          (t.onload = function () {
+            VK.Retargeting.Init("VK-RTRG-1801103-hzj7h"), VK.Retargeting.Hit();
+          }),
+          document.head.appendChild(t);
+      })();
+    </script>
+    <noscript>
+      <div>
+        <img
+          src="https://mc.yandex.ru/watch/95235297"
+          style="position: absolute; left: -9999px"
+          alt="noscript"
+        />
+      </div>
+    </noscript>
+
+  
+    <noscript
+      ><img
+        height="1"
+        width="1"
+        style="display: none"
+        alt="noscript"
+        src="https://www.facebook.com/tr?id=728588242655188&ev=PageView&noscript=1"
+    /></noscript>
+  </body>
+</html>

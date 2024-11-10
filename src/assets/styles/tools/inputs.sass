@@ -1,0 +1,36 @@
+@mixin input
+  display: block
+  border: 1px solid rgba($dark, .3)
+  border-radius: 2px
+  width: 100%
+  transition-property: border-color
+  transition-duration: .2s
+  -webkit-appearance: none
+  &:focus
+    border-color: $dark
+  &:not(.input_no-validate):invalid
+    border-color: $red
+  &::placeholder
+    color: rgba($fc_dark, .6)
+    transition-property: color
+    transition-duration: .2s
+
+input[type='search']
+  &::-webkit-search-decoration,
+  &::-webkit-search-cancel-button,
+  &::-webkit-search-results-button,
+  &::-webkit-search-results-decoration
+    display: none
+
+input[type="date"]::-webkit-inner-spin-button,
+input[type="date"]::-webkit-calendar-picker-indicator
+  display: none
+  -webkit-appearance: none
+
+.input-text
+  +input
+  &[readonly]
+    background-color: rgba($grey, .4)
+
+.input-text_error
+  border-color: $red

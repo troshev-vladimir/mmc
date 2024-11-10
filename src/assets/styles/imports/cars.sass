@@ -1,0 +1,80 @@
+@import "../variables"
+
+.cars
+  margin-top: 52px
+  margin-bottom: 100px
+
+.cars__cont
+  .button-to-top 
+    bottom: 30px
+    @media screen and (max-width: 1260px)
+      bottom: 70px
+
+    @media screen and (max-width: 940px)
+      bottom: 120px
+
+    @media screen and (max-width: 600px)
+      bottom: 160px
+
+.cars__caption
+  margin-bottom: 20px
+  @media screen and (max-width: 940px) 
+    font-size: 24px
+    line-height: 120%
+
+.cars__field
+  position: relative
+  display: block
+  margin-bottom: 32px
+  &::before
+    content: ''
+    position: absolute
+    top: 15px
+    left: 11px
+    width: 28px
+    height: 28px
+    +bgIcon('ic_loupe_dark.svg')
+    opacity: .3
+
+.cars__input
+  padding: 18px 16px 19px 52px
+
+.cars__table
+  border-collapse: collapse
+  text-align: left
+
+  th
+    padding-right: 12px
+    font-size: 14px
+    font-weight: 600
+    line-height: 17px
+    &:first-child
+      width: 185px
+    &:nth-child(2)
+      width: 190px
+    &:nth-child(3)
+      width: 195px
+    &:nth-child(4)
+      width: 190px
+    &:nth-child(5)
+      width: 190px
+  td
+    border-bottom: 1px solid rgba($dark, .3)
+    font-size: 14px
+    height: 90px
+    line-height: 17px
+    @media screen and (max-width: 600px)
+      height: 130px
+
+    &:not(:first-child)
+      padding-left: 10px
+    
+//.cars__text
+
+.cars__pagination
+  margin-top: 36px
+
+.cars__manual-order
+  position: sticky
+  bottom: 0
+  pointer-events: none

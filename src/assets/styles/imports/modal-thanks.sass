@@ -1,0 +1,77 @@
+@import "../variables"
+
+.modal-thanks
+  position: fixed
+  top: 0
+  right: 0
+  bottom: 0
+  left: 0
+  z-index: 100
+
+.modal-thanks__area
+  position: relative
+  z-index: 1
+  height: 100vh
+  display: flex
+  align-items: center
+
+.modal-thanks__layer
+  position: absolute
+  top: 0
+  right: 0
+  bottom: 0
+  left: 0
+  z-index: 1
+  background-color: rgba(196, 196, 196, .7)
+  cursor: pointer
+
+.modal-thanks__box
+  position: relative
+  z-index: 1
+  margin: 0 auto
+  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2)
+  border-radius: 5px
+  width: 800px
+  padding-bottom: 26px
+  background-color: $white
+  overflow: hidden
+
+.modal-thanks__head
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1)
+  padding: 27px 30px 30px 94px
+  background-color: $green
+  +bgImg('ic_daw_white.svg')
+  background-repeat: no-repeat
+  background-position: 48px 23px
+  background-size: 36px
+
+.modal-thanks__head-text
+  font-size: 24px
+  font-weight: 600
+  line-height: 29px
+  color: $fc_white
+
+.modal-thanks__body
+  margin-top: 32px
+  padding: 0 36px
+
+.modal-thanks__body-text
+  display: block
+  margin-bottom: 32px
+
+.modal-thanks__body-password
+  display: block
+  padding: 9px 0 10px 0
+  border-top: 1px solid rgba($dark, .6)
+  border-bottom: 1px solid rgba($dark, .6)
+
+.modal-thanks__btn-box
+  display: flex
+  justify-content: center
+  margin-top: 32px
+  padding: 0 32px
+
+.modal-thanks__button
+  margin: 0 10px
+  min-width: 162px
+  padding: 12px 22px 14px

@@ -1,0 +1,40 @@
+@import "variables"
+
+@import "tools/app"
+@import "tools/fonts"
+@import "tools/framework"
+@import "tools/buttons"
+@import "tools/content"
+@import "tools/inputs"
+@import "tools/links"
+@import "tools/cage"
+
+
+.button_accent 
+  box-sizing: border-box
+  border: none
+  font-weight: 600
+  font-size: 14px
+  line-height: 17px
+  text-transform: uppercase
+  color: #FFFFFF !important
+  padding: 15px 36px
+  background-color: #177EC9
+  border-radius: 5px
+  display: block
+  text-align: center
+  text-decoration: none
+
+  &:disabled
+    background-color: #c8d2da
+    pointer-events: none
+    color: rgba(51, 51, 51, 0.6)
+
+  &--red 
+    background-color: #E31E24
+
+    &:disabled
+      background-color: #be9395
+      pointer-events: none
+      color: rgba(51, 51, 51, 0.6)
+

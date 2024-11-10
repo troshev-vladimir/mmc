@@ -1,0 +1,129 @@
+@import "../variables"
+
+.patches
+  border: 1px solid rgba($dark, .3)
+  border-radius: 2px
+  padding: 16px 28px 22px 20px
+  background-color: $white
+
+.patches.tuning 
+  border: 1px solid #292
+  .patches__name
+    &::before, &::after
+      top: 11px
+      left: 13px
+  .patches__head-name 
+    background: #292
+    padding: 5px 10px
+    color: #fff
+    border-radius: 6px
+
+.patches__head
+  display: flex
+  margin-bottom: 9px
+  justify-content: space-between
+
+
+
+.patches__head-count
+  color: rgba($fc_dark, .6)
+
+//.patches__body
+
+.patches__item
+  position: relative
+  display: block
+  border-bottom: 1px solid rgba($dark, .3)
+  padding: 11px 46px 11px 50px
+  cursor: pointer
+
+.patches__input
+  position: absolute
+  z-index: -1
+  opacity: 0
+  &:checked
+    + .patches__name
+      &::before
+        border-color: $blue
+        background-color: $blue
+      &::after
+        opacity: 1
+  &:disabled
+    + .patches__name
+      &::before
+        border-color: $grey
+        background-color: $grey
+      &::after
+        opacity: 0
+
+.patches__name
+  display: block
+  user-select: none
+  &::before, &::after
+    content: ''
+    position: absolute
+    top: 10px
+    left: 13px
+    box-sizing: border-box
+    width: 20px
+    height: 20px
+    border-radius: 2px
+    transition-duration: .1s
+  &::before
+    border: 1px solid $dark
+    transition-property: background-color, border-color
+  &::after
+    opacity: 0
+    +bgIcon('ic_daw_white.svg', 16px, 16px)
+    transition-property: opacity
+
+.patches__note
+  position: absolute
+  right: 16px
+  width: 16px
+  height: 16px
+  +bgIcon('ic_warning.svg')
+  &:hover
+    .patches__note-box
+      width: 228px
+      height: auto
+      min-height: 46px
+      padding: 5px 10px 6px 56px
+      opacity: 1
+
+.patches__note-box
+  position: absolute
+  bottom: 100%
+  left: -160px
+  margin-bottom: 10px
+  opacity: 0
+  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2)
+  border: 1px solid rgba($dark, .3)
+  overflow: hidden
+  border-radius: 2px
+  width: 0
+  height: 0
+  background-color: $white
+  +bgImg('ic_warning.svg')
+  background-repeat: no-repeat
+  background-position: 10px center
+  background-size: 32px
+  font-size: 12px
+  line-height: 14px
+
+.patches__footer
+  display: flex
+  margin-top: 11px
+
+.patches__footer-list
+  flex-grow: 1
+  margin-right: 12px
+  font-size: 12px
+  line-height: 14px
+  color: rgba($fc_dark, .6)
+
+.patches__footer-price
+  flex-shrink: 0
+  font-size: 12px
+  line-height: 14px
+  color: rgba($fc_dark, .8)

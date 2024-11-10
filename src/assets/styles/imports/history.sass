@@ -1,0 +1,218 @@
+@import "../variables"
+
+.history
+  margin-top: 52px
+  margin-bottom: 100px
+
+.history__cont
+  a 
+    color: #fff
+
+.history__caption
+  margin-bottom: 12px
+
+.history__filter
+  margin-bottom: 20px
+  display: flex
+  flex-wrap: wrap
+  align-items: center
+  justify-content: end
+  gap: 20px
+
+
+.history__search
+  position: relative
+  flex: 1 1 auto
+
+  &::before
+    content: ''
+    position: absolute
+    top: 10px
+    left: 11px
+    width: 20px
+    height: 20px
+    +bgIcon('ic_loupe_dark.svg')
+    opacity: .3
+
+.history__btn-box
+  text-align: right
+  flex: 0 1 auto
+
+.history__button
+  padding: 10px 20px
+  width: 100%
+//.history__table
+
+.history__head
+  display: flex
+  padding: 0 22px 8px
+
+.history__head-name
+  flex-shrink: 0
+  padding: 0 12px
+  text-align: center
+  white-space: nowrap
+
+.history__head-name_n
+  width: 100px
+
+.history__head-name_date
+  width: 160px
+
+.history__head-name_info
+  width: 447px
+
+.history__head-name_status
+  width: 180px
+
+.history__head-name_sum
+  width: 125px
+
+.history__head-name_file
+  width: 64px
+
+.history__box
+  position: relative
+  border: 1px solid rgba($dark, .3)
+  border-radius: 2px
+  padding: 25px 12px 26px
+  &:not(:last-child)
+    margin-bottom: 20px
+
+.history__box_disabled
+  background-color: rgba($dark, .05)
+  .history__item
+    opacity: .7
+
+.history__list
+  display: flex
+  align-items: center
+  padding: 13px 12px 32px
+
+.history__item
+  flex-shrink: 0
+  padding: 0 12px
+
+.history__item_n
+  width: 100px
+  text-align: center
+
+.history__item_date
+  width: 160px
+  text-align: center
+
+.history__item-support-btn
+  position: absolute
+  bottom: 26px
+  right: 15px
+  padding: 5px 10px 5px
+
+.history__item_info
+  width: 447px
+
+.history__item_status
+  display: flex
+  flex-direction: column
+  align-items: center
+  width: 180px
+  text-align: center
+  a
+    padding: 5px 10px 6px
+
+.history__item_sum
+  width: 125px
+  text-align: center
+
+.history__item_file
+  width: 64px
+
+.history__item-download
+  display: block
+  margin: -10px auto
+  width: 40px
+  height: 40px
+  +bgIcon('ic_download_blue.svg', 24px, 24px)
+  @include hover
+    transition-property: opacity
+    transition-duration: .2s
+  &:hover
+    @include hover
+      opacity: .9
+      transition-duration: .1s
+
+.history__item-value
+  &:not(&:last-child)
+    margin-bottom: 8px
+
+.history__item-notes
+  margin-top: 8px
+
+.history__item-note
+  display: block
+  font-size: 12px
+  line-height: 14px
+  color: rgba($fc_dark, .6)
+
+.history__edit
+  display: flex
+  align-items: center
+  padding: 8px 120px 0 400px
+
+.history__edit-button
+  padding: 12px 12px 14px
+
+.history__edit-note-icon
+  position: relative
+  display: block
+  margin-left: 24px
+  margin-bottom: 4px
+  max-width: 300px
+  padding-left: 50px
+  font-size: 14px
+  line-height: 17px
+  width: 32px
+  height: 32px
+  &::before
+    content: ''
+    position: absolute
+    top: 50%
+    left: 0
+    margin-top: -16px
+    width: 32px
+    height: 32px
+    +bgIcon('ic_warning.svg')
+  &:hover  .history__edit-note-text
+    display: block
+    width: 228px
+    height: auto
+    min-height: 46px
+    opacity: 1
+.history__edit-note-text
+  display: none
+  background: white
+  position: absolute
+  bottom: 100%
+  left: -60px
+  margin-bottom: 10px
+  opacity: 0
+  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2)
+  border: 1px solid rgba($dark, .3)
+  overflow: hidden
+  border-radius: 2px
+  width: 0
+  height: 0
+  background-color: $white
+  background-repeat: no-repeat
+  background-position: 10px center
+  background-size: 32px
+  font-size: 12px
+  line-height: 14px
+  padding: 10px
+
+.history__pagination
+  margin-top: 20px
+
+.history__cancel
+  font-weight: 400
+  background-color: transparent
+  border: none

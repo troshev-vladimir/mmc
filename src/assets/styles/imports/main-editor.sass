@@ -1,0 +1,50 @@
+@import "../variables"
+
+.main-editor
+  overflow: hidden
+
+//.main-editor__cont
+
+.main-editor__title
+  margin-bottom: 60px
+
+.main-editor__list
+  display: flex
+  flex-wrap: wrap
+  margin: 0 -20px
+
+.main-editor__item
+  margin: 0 20px 100px
+  width: calc(100% / 3  - 40px)
+  text-align: center
+
+  @media screen and (max-width: 940px) 
+    width: calc(100% / 2  - 20px)
+    margin: 0 10px 50px
+  
+  @media screen and (max-width: 600px) 
+    width: 100%
+    margin: 0 10px 40px
+
+.main-editor__image
+  margin: 0 auto 16px
+  width: 100px
+  height: 100px
+  @media screen and (max-width: 940px) 
+    width: 40px
+    height: 40px
+
+.main-editor__headline
+  font-weight: 500
+  font-size: 18px
+  margin-bottom: 10px
+  @media screen and (max-width: 600px) 
+    font-size: 16px
+
+
+.main-editor__text
+  font-weight: 400
+  font-size: 18px
+  line-height: 150%
+  @media screen and (max-width: 600px) 
+    font-size: 14px

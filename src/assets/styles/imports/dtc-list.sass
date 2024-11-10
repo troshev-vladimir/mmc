@@ -1,0 +1,113 @@
+.dtc-list
+  border: 1px solid rgba($dark, .3)
+  border-radius: 2px
+  padding: 17px 28px 30px 20px
+
+.dtc-list__head
+  display: flex
+  margin-bottom: 22px
+
+.dtc-list__head-name
+  flex-grow: 1
+
+.dtc-list__head-count
+  color: rgba($fc_dark, .6)
+
+.dtc-list__note
+  display: flex
+  align-items: center
+  margin: 0 -6px 14px
+
+.dtc-list__note-item
+  position: relative
+  margin: 0 6px
+  width: calc(50% - 12px)
+  padding: 0 16px 0 48px
+  &::before
+    content: ''
+    position: absolute
+    top: 50%
+    left: 0
+    margin-top: -16px
+    width: 32px
+    height: 32px
+    background-repeat: no-repeat
+    background-size: 100%
+
+.dtc-list__note-item_price
+  &::before
+    +bgImg('ic_wallet.svg')
+
+.dtc-list__note-item_action
+  &::before
+    +bgImg('ic_warning.svg')
+
+.dtc-list__note-text
+  display: block
+
+.dtc-list__form
+  margin-bottom: 10px
+
+.dtc-list__input
+  padding: 10px 49px 11px
+
+.dtc-list__area
+  margin-bottom: 19px
+  max-height: 240px
+  overflow: auto
+
+.dtc-list__check
+  position: relative
+  display: block
+  border-bottom: 1px solid rgba($dark, .3)
+  padding: 9px 46px 10px 50px
+  cursor: pointer
+
+.dtc-list__check-input
+  position: absolute
+  z-index: -1
+  opacity: 0
+  &:checked
+    + .dtc-list__check-name
+      &::before
+        border-color: $blue
+        background-color: $blue
+      &::after
+        opacity: 1
+
+.dtc-list__check-name
+  &::before, &::after
+    content: ''
+    position: absolute
+    top: 10px
+    left: 13px
+    box-sizing: border-box
+    width: 20px
+    height: 20px
+    border-radius: 2px
+    transition-duration: .1s
+  &::before
+    border: 1px solid $dark
+    transition-property: background-color, border-color
+  &::after
+    opacity: 0
+    +bgIcon('ic_daw_white.svg', 16px, 16px)
+    transition-property: opacity
+
+.dtc-list__footer
+  display: flex
+
+.dtc-list__footer-list
+  flex-grow: 1
+  margin-right: 12px
+  font-size: 12px
+  line-height: 14px
+  color: rgba($fc_dark, .6)
+
+.dtc-list__footer-price
+  flex-shrink: 0
+  font-size: 12px
+  line-height: 14px
+  color: rgba($fc_dark, .8)
+
+

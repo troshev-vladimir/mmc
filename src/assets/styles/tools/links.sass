@@ -1,0 +1,54 @@
+@mixin link
+  cursor: pointer
+  @include hover
+    transition-property: color, text-decoration-color
+    transition-duration: .2s
+  &:hover
+    @include hover
+      transition-duration: .1s
+
+.link_dark
+  +link
+  text-decoration-color: transparent
+  color: $fc_dark
+  &:hover
+    @include hover
+      text-decoration-color: $fc_dark
+      color: $fc_dark
+
+.link_white
+  +link
+  text-decoration-color: transparent
+  color: $fc_white
+  &:hover
+    @include hover
+      text-decoration-color: $fc_white
+      color: $fc_white
+
+.link_gray
+  +link
+  text-decoration-color: transparent
+  color: rgba($fc_dark, .6)
+  &:hover
+    @include hover
+      text-decoration-color: $fc_dark
+      color: $fc_dark
+
+.link_gray-underline
+  +link
+  text-decoration: underline
+  text-decoration-color: rgba($fc_dark, .6)
+  color: rgba($fc_dark, .6)
+  &:hover
+    @include hover
+      text-decoration-color: $fc_dark
+      color: $fc_dark
+
+.link_blue
+  +link
+  text-decoration-color: transparent
+  color: $fc_blue !important
+  &:hover
+    @include hover
+      text-decoration-color: $fc_blue-hover !important
+      color: $fc_blue-hover !important
