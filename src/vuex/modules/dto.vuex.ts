@@ -27,7 +27,7 @@ export class UserStore extends VuexModule {
     orderPrice: null,
     originalEcuFileId: null,
     originalEcuFileName: null,
-    allowEdit: true,
+    allowEdit: null,
     allowSave: null,
     allowPay: null,
     allowCancel: null,
