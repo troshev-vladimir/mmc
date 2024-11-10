@@ -45,6 +45,10 @@ export default class LoadFile extends Vue {
       this.fileName = fileName;
       this.done = true;
       this.progress = "100%";
+    } else {
+      this.fileName = '';
+      this.done = false;
+      this.progress = "0%";
     }
   }
 
