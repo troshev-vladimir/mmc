@@ -22,7 +22,7 @@ article.login
       label.login__check
         input.login__check-input(type="checkbox", v-model="remember")
         span.login__check-name.text-small {{ $t('remember') }}
-      
+
       .login__btn-box
         button.login__button.button_accent.text(
           @click="sendForm"
@@ -31,7 +31,7 @@ article.login
       //-   a.login__button.button_accent.text(
       //-     v-if="!isRussian || isTest"
       //-     :href="getGoogleAuthLink()"
-      //-   ) 
+      //-   )
       //-     font-awesome-icon.mr-3(:icon="['fab', 'google']")
       //-     |Google Auth
       .login__link-box
@@ -106,9 +106,9 @@ export default class TheLogin extends Vue {
       return this.$router.push({
         name: "Home",
       });
-    if (this.prevPage.name === "Prices" && storage.lastVehicle)
+    if (this.prevPage.name === "Prices")
       return this.$router.push({
-        name: "Order",
+        name: "Prices",
       });
     if (this.prevPage.name === "ManualOrder")
       return this.$router.push({
@@ -167,7 +167,7 @@ export default class TheLogin extends Vue {
     "recovery": "Forgot your password?",
     "or": "or",
     "registration": "Register"
-    
+
   }
 }
 </i18n>
