@@ -20,6 +20,7 @@
             v-model="orderDTO"
             @send-order="saveOrder"
             :errors="filterErrors.UserTaskDescr"
+            @clear-errors="filterErrors.UserTaskDescr = {}"
           )
           .tip {{$t('tip')}}
             router-link(target="_blank" :to="{name: 'ManualEditInstruction'}") {{$t('instruction')}}
@@ -38,9 +39,10 @@ import { VehicleInterface } from "@/interfaces/vehicle";
 import Vehicle = VehicleInterface.Vehicle;
 import { OrderInterface } from "@/interfaces/order";
 import api from "@/api";
-import getCurrencyName from "@/additionally/getCurrencyName";
 import ManualEcu from "@/components/_inner/ManualEcu.vue";
 import ModalMmcError from "@/components/_modal/ModalMmcError.vue";
+import orderFactory from "@/additionally/orderFactory";
+import Order = OrderInterface.Order;
 import { vxm } from "@/vuex";
 interface Error {
   field: string;
@@ -86,7 +88,18 @@ interface Error {
       this.$router.push({ name: 'Login' })
       window.dispatchEvent(new Event("auth-error"));
     }
+  },
+
+  async mounted() {
+    vxm.dto.setInitialState();
+    const order = await orderFactory("create");
+    if (order) {
+      order.vehicleType = "Car/Truck/Buss";
+      vxm.dto.dto = order;
+    }
+
     this.orderDTO = vxm.dto.dto;
+    document.dispatchEvent(new Event("app-prerender"));
   },
 
   watch: {
@@ -98,10 +111,6 @@ interface Error {
     },
   },
 
-  async mounted() {
-
-    document.dispatchEvent(new Event("app-prerender"));
-  }
 })
 export default class ManualOrderPage extends Vue {
   [x: string]: any;

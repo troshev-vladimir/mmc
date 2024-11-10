@@ -9,7 +9,7 @@
         required
         :placeholder="$t('placeholder')"
         :style='{ "border-color": errors && errors.error ? "#E52E2E" : "rgba(51, 51, 51, 0.3)" }',
-        @input='errors = {}'
+        @input='clearErrors'
       )
       span.manual-ecu__error(v-if="errors") {{errors.error}}
     .comment-file__note
@@ -57,6 +57,9 @@ export default {
     },
   },
   methods: {
+    clearErrors() {
+      this.$emit("clear-errors");
+    },
     sendOrder() {
       this.$emit("send-order");
     },

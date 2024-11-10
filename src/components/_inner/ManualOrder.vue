@@ -3,12 +3,12 @@
   p.manual-order__text.text-small {{ $t('text')}}
     |
     span.manual-order__text(v-if="!userIsAuth") {{ $t('after')}}
-    | 
+    |
     span.link.manual-order__text(
       v-if="!userIsAuth"
       style="color: #2222ff"
       @click.prevent="$router.push({name: 'Login' })"
-    ) {{ $t('text2') }} 
+    ) {{ $t('text2') }}
   .manual-order__button-box
     button.manual-order__button.text-small.button_accent(@click="clickHandler") {{ $t('button') }}
 
@@ -16,7 +16,7 @@
     v-model="emailUnconfirmed"
     width="500"
     @click:outside="emailUnconfirmed = false"
-  ) 
+  )
     TheOrderModal(
       @close="emailUnconfirmed = false"
     )
@@ -26,9 +26,7 @@
 import "@/assets/styles/imports/manual-order.sass";
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { vxm } from "@/vuex";
-import orderFactory from "@/additionally/orderFactory";
 import { OrderInterface } from "@/interfaces/order";
-import Order = OrderInterface.Order;
 import TheOrderModal from "@/components/order/TheOrderModal.vue";
 
 @Component({
@@ -55,12 +53,6 @@ export default class ManualOrder extends Vue {
       return;
     }
 
-    vxm.dto.setInitialState();
-    const order = await orderFactory("create");
-    if (order) {
-      order.vehicleType = "Car/Truck/Buss";
-      vxm.dto.dto = order;
-    }
     this.$router.push({
       name: "ManualOrder",
       params: { lang: vxm.user.lang },
