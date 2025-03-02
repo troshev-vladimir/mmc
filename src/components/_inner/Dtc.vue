@@ -17,9 +17,9 @@
   .dtc__field
     UiSelectSearch(
       :items="errors"
-      v-model="selected" 
+      v-model="selected"
       :placeholder="$t('placeholder')"
-      hide-details 
+      hide-details
       dense
       clearable
       return-object
@@ -36,7 +36,7 @@
         #selection="selection"
       )
         v-chip(
-          @click="deleteItem(selection.item)" 
+          @click="deleteItem(selection.item)"
           v-text="selection.item"
         )
     span.dtc__footer-price(v-show="total") {{ $t('price') }}: {{ total }}
@@ -44,7 +44,7 @@
 
 <script lang="ts">
 import "@/assets/styles/imports/dtc.sass";
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import { TaskInterface } from "@/interfaces/task";
 import VueI18n from "vue-i18n";
 import TranslateResult = VueI18n.TranslateResult;
@@ -88,10 +88,27 @@ export default class Dtc extends Vue {
     return "";
   }
 
-  mounted() {
-    this.selected = this.errors.filter((el: TaskInterface.Dtc) => {
+  updateSelected() {
+    const selectedErrors = this.errors.filter((el: TaskInterface.Dtc) => {
       return el.isSel;
     });
+
+    if (selectedErrors.length < this.selected.length) {
+      this.$toasted.show(String(this.$t("message")), {
+        icon: "check",
+      });
+    }
+
+    this.selected = selectedErrors;
+  }
+
+  @Watch('errors')
+  public watchErrors() {
+    this.updateSelected()
+  }
+
+  mounted() {
+    this.updateSelected()
   }
 }
 </script>
@@ -108,7 +125,8 @@ export default class Dtc extends Vue {
     "selectedFill": "Отключенные ошибки:",
     "selectedEmpty": "Ошибки не выбраны",
     "notFound": "Не найдено",
-    "price": "Стоимость"
+    "price": "Стоимость",
+    "message": "DTC коды включённые в галочки удалены"
   },
   "en": {
     "removeError": "Clearing DTC Codes",
@@ -120,7 +138,8 @@ export default class Dtc extends Vue {
     "selectedFill": "Deactivated errors:",
     "selectedEmpty": "Errors are not selected",
     "notFound": "Not found",
-    "price": "Price"
+    "price": "Price",
+    "message": "DTC коды включённые в галочки удалены"
   }
 }
 </i18n>
