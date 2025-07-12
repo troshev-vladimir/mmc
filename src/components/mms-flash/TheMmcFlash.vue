@@ -190,15 +190,15 @@ export default class MmcFlash extends Vue {
       });
     }
 
-    const mmcKey = selectedModules.find(el => el.id === 'MmcKey')
+    // const mmcKey = selectedModules.find(el => el.id === 'MmcKey')
 
-    if (mmcKey && (vxm.user.user?.currencyId === 2 || vxm.user.user?.currencyId === 3)) {
-      selectedModules.push({
-        name: `${mmcKey.name} ${this.$t('mmc-key-delivery')}`,
-        priceSum: 80,
-        id: "MMCKeyDelivery",
-      })
-    }
+    // if (mmcKey && (vxm.user.user?.currencyId === 2 || vxm.user.user?.currencyId === 3)) {
+    //   selectedModules.push({
+    //     name: `${mmcKey.name} ${this.$t('mmc-key-delivery')}`,
+    //     priceSum: 80,
+    //     id: "MMCKeyDelivery",
+    //   })
+    // }
 
     return selectedModules;
   }
@@ -242,28 +242,28 @@ export default class MmcFlash extends Vue {
       const module = this.modulesAll.find((item) => item.id === id);
       if (module) {
         this.modulesChecked.push(module);
-        // const mmcKey = module.id === 'MmcKey'
+        const mmcKey = module.id === 'MmcKey'
 
-        // if (mmcKey && (vxm.user.user?.currencyId === 2 || vxm.user.user?.currencyId === 3)) {
-          //   this.modulesChecked.push({
-          //     id: "MMCKeyDelivery",
-          //     price: [
-          //       {"cur":"Rub","price":0},
-          //       {"cur":"Usd","price":80},
-          //       {"cur":"Eur","price":80}
-          //     ],
-          //     names: [
-          //       {"lang":"ru","value":`Usb Ключ MmcFlash доставкa`},
-          //       {"lang":"en","value":"Usb Key MmcFlash delivery"}
-          //     ],
-          //     brands: [],
-          //     descr: [],
-          //     ids: [],
-          //     images: [],
-          //     options: [],
-          //     url: []
-          //   })
-          // }
+        if (mmcKey && (vxm.user.user?.currencyId === 2 || vxm.user.user?.currencyId === 3)) {
+            this.modulesChecked.push({
+              id: "MMCKeyDelivery",
+              price: [
+                {"cur":"Rub","price":0},
+                {"cur":"Usd","price":80},
+                {"cur":"Eur","price":80}
+              ],
+              names: [
+                {"lang":"ru","value":`Usb Ключ MmcFlash доставкa`},
+                {"lang":"en","value":"Usb Key MmcFlash delivery"}
+              ],
+              brands: [],
+              descr: [],
+              ids: [],
+              images: [],
+              options: [],
+              url: []
+            })
+          }
         }
       }
   }
