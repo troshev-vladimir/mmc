@@ -17,7 +17,7 @@ footer.footer
           :to='{name: "News" , query: { type: "Article"}}',
           v-text='$t("Articles")'
         )
-  
+
         router-link.footer__link.fw_bold(
           v-for='name in menu1',
           :key='name',
@@ -35,26 +35,26 @@ footer.footer
       p {{ $t('Subscribe') }}:
       .input-wrapper
         input(
-          :placeholder='$t("yourEmail")' 
-          v-model="email" 
+          :placeholder='$t("yourEmail")'
+          v-model="email"
           @input="emailError = false"
           :style='{ "border-color": emailError ? "#E52E2E" : "rgba(255, 255, 255, 0.33)" }',
         )
         button(:title='$t("Subscribe")' @click="emailSubscribe()")
       span.error-msg(v-if='emailError') {{ emailError }}
       label.footer__agreement
-        input(type='checkbox' v-model="emailAgreement" @change="agreementError = false" :class="{'agreement-error': agreementError}") 
+        input(type='checkbox' v-model="emailAgreement" @change="agreementError = false" :class="{'agreement-error': agreementError}")
         span {{ $t('Checkbox') }}
 
       .payment-services
-        picture(v-for="i in 7" :key="i")
+        picture(v-for="i in [1,6,3,4,2,7]" :key="i")
           source(:srcset="`/img/payment-services/0${i}.webp`" type="image/webp")
           img(
-            :src="`/img/payment-services/0${i}.png`" 
-            :alt="`payment service ${i}`" 
+            :src="`/img/payment-services/0${i}.png`"
+            :alt="`payment service ${i}`"
             loading="lazy"
-            height="20"
-            width="20"
+            height="40"
+            width="40"
           )
 
 </template>
@@ -80,7 +80,7 @@ export default class TheFooter extends Vue {
     "TopUpBalanceInstruction",
   ];
 
-  
+
 
   get menu2() {
     return vxm.user.lang === "ru" ? [
@@ -142,7 +142,7 @@ export default class TheFooter extends Vue {
     "Articles": "Статьи",
     "Prices": "Цены",
     "MMCFlash": "Модули MMC Flash",
-    
+
     "Subscribe": "Подпишитесь на новости",
     "Checkbox": "Ставя отметку, я даю свое согласие на обработку моих персональных данных и принимаю условия политики конфиденциальности",
     "yourEmail": "Ваш e-mail",
@@ -152,7 +152,7 @@ export default class TheFooter extends Vue {
     "EditInstruction": "Инструкция к сервису редактирования",
     "subscribedSuccessfully": "Подписка оформленна успешно!",
     "agreementRequired": "Надо дать согласие на обработку"
-    
+
   },
   "en": {
     "note": "ALL RIGHT RESERVED.",
@@ -287,7 +287,7 @@ export default class TheFooter extends Vue {
       justify-content: space-between;
 
       img {
-        height: 20px;
+        height: 25px;
         width: auto;
         margin-bottom: 10px;
         margin-right: 14px;

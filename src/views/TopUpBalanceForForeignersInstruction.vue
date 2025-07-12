@@ -25,26 +25,26 @@
             <img :src="getImg('top-up')" alt="top up" />
           </li>
 
-          <li>
+          <!-- <li>
             {{ $t("method-1-text-3") }}
             <img :src="getImg('top-up-foragin')" alt="order modal" />
-          </li>
+          </li> -->
 
           <li>
             {{ $t("method-1-text-4") }}
             <ol style="display: flex; flex-direction: column">
               <li style="display: inline-block; margin-left: 6px">
-                <span>4.1</span>
-                {{ $t("method-1-text-4-1") }}
+                <!-- <span>4.1</span> -->
+                <!-- {{ $t("method-1-text-4-1") }}
 
                 <p>{{ $t("method-1-text-4-1-1") }}</p>
                 <img :src="getImg('paypall')" alt="paypall" />
                 <p>{{ $t("method-1-text-4-1-2") }}</p>
-                <p>{{ $t("method-1-text-4-1-3") }}</p>
+                <p>{{ $t("method-1-text-4-1-3") }}</p> -->
               </li>
 
               <li style="display: inline-block; margin-left: 6px">
-                <span>4.2</span>
+                <span>3.1</span>
                 {{ $t("method-1-text-4-2") }}
 
                 <p>{{ $t("method-1-text-4-2-1") }}</p>
@@ -54,7 +54,7 @@
             </ol>
           </li>
 
-          <li>
+          <li class="mb-8">
             {{ $t("method-1-text-5-1") }}
             <img :src="getImg('order-modal')" alt="order modal" />
 
@@ -181,7 +181,7 @@ h2 {
 <i18n>
 {
   "ru": {
-    "seoTitle": "Пополнение баланса для пользователей из любой страны мира | MMC Flash", 
+    "seoTitle": "Пополнение баланса для пользователей из любой страны мира | MMC Flash",
     "seoDescription": "Инструкция для пополнения баланса для пользователей из любой страны мира",
     "instruction": "Инструкция: ",
     "title": "Пополнение баланса для пользователей из любой страны мира.",
@@ -203,7 +203,7 @@ h2 {
   },
 
   "en": {
-    "seoTitle": "Balance top-up for users from any country in the World | MMC Flash", 
+    "seoTitle": "Balance top-up for users from any country in the World | MMC Flash",
     "seoDescription": "Manual for balance top-up for users from any country in the World ",
     "instruction": "Manual: ",
     "title": "Balance top-up for users from any country in the World.",

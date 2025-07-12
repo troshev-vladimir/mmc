@@ -3,25 +3,27 @@ v-dialog(v-model='isOpen', width='600')
   .top-up-balance
     .top-up-balance__title {{ $t('title') }}
     v-radio-group(v-model='method', dense, hide-details)
-      .top-up-balance__method.top-up-balance__method--paypal(
-        :class='{ "top-up-balance__method--active": method === "Paypal" }'
-      )
-        v-radio.radio(:value='"Paypal"', active-class='radio--active')
-          template(v-slot:label)
-            .top-up-balance__method-title
-              img.radio__icon(src='/img/balance/payment-methods/paypal.svg', alt="paypal")
-              .radio__title Paypal
+      //- .top-up-balance__method.top-up-balance__method--paypal(
+      //-   :class='{ "top-up-balance__method--active": method === "Paypal" }'
+      //- )
+        //- v-radio.radio(:value='"Paypal"', active-class='radio--active' disabled)
+        //-   template(v-slot:label)
+        //-     .top-up-balance__method-title.top-up-balance__method-title--unavailable
+        //-       img.radio__icon(src='/img/balance/payment-methods/paypal.svg', alt="paypal")
+        //-       .radio__title
+        //-         span Paypal
+        //-         span ({{ $t('not-awailable') }})
 
-        .top-up-balance__description.mb-2 {{ $t('payPallDescription') }}
+        //- .top-up-balance__description.mb-2 {{ $t('payPallDescription') }}
 
-        v-form 
+        //- v-form
           //- v-text-field.user-account(
-          //-   :label="$t('enter-paypal')" 
+          //-   :label="$t('enter-paypal')"
           //-   :disabled="method !== 'Paypal'"
           //-   v-model="usersPaypal"
           //- )
           //- v-text-field.user-amount(
-          //-   :label="`${$t('enter-amount')} (${userCurencySymbol})`" 
+          //-   :label="`${$t('enter-amount')} (${userCurencySymbol})`"
           //-   :disabled="method !== 'Paypal'"
           //-   v-model.number="selectedAmount"
           //-   type="number"
@@ -36,8 +38,8 @@ v-dialog(v-model='isOpen', width='600')
         //- ) {{ $t('get-props') }}
         //- #paypal-button-container
         //- #resultMessage
-        
-        button.button_accent(@click="createIntention" :disabled='method !== "Paypal"') PAY NOW
+
+        //- button.button_accent(@click="createIntention" disabled) PAY NOW
 
         <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" v-if="getUserCurrency() == 2" >
           <input type="hidden" name="cmd" value="_s-xclick" />
@@ -69,7 +71,7 @@ v-dialog(v-model='isOpen', width='600')
 
         v-form
           v-text-field.user-amount(
-            :label="`${$t('enter-amount')} (${userCurencySymbol})`" 
+            :label="`${$t('enter-amount')} (${userCurencySymbol})`"
             :disabled="method !== 'CryptoCloud'"
             v-model.number="selectedAmount"
             type="number"
@@ -101,7 +103,7 @@ interface ApproveActions {
 @Component
 export default class ModalTopUpBalanceByForegin extends Vue {
   @Prop({ type: Boolean }) readonly value!: boolean;
-  method: "Paypal" | "CryptoCloud" = "Paypal";
+  method: "Paypal" | "CryptoCloud" = "CryptoCloud";
   selectedAmount = null;
   usersPaypal = "";
   usersHash = "";
@@ -242,6 +244,7 @@ export default class ModalTopUpBalanceByForegin extends Vue {
   "ru": {
     "title": "Выбрать метод оплаты",
     "sendPaypalToUser": "Вам на почту отправлены реквизиты",
+    "not-awailable": "временно недоступно",
     "payPallDescription": "Вы можете пополнить свой личный счет с помощью перевода с вашего счета PayPal. Нажмите на кнопку PAY NOW, перейдите к форме оплаты, введите сумму на которую хотите пополнить баланс и сделайте перевод. Баланс будет пополнен автоматически и отобразится в вашем аккаунте.",
     "payDisscountDescription": "При пополнении баланса на сумму от 100 $(€), мы зачислим вам на счет дополнительно 10%, при сумме от 200 $(€) дополнительно 15%, свыше 500 $(€) дополнительно 25% к сумме пополнения.",
     "cryptoDescription": "Зачисление денежных средств происходит в течение нескольких минут, в некоторых случаях - до часа. Данный функционал связан со спецификой работы системы blockchain. О поступлении денежных средств на счет вам придет уведомление на e-mail.",
@@ -253,6 +256,7 @@ export default class ModalTopUpBalanceByForegin extends Vue {
   "en": {
     "title": "Choose a payment method",
     "sendPaypalToUser": "Details have been sent to you by email",
+    "not-awailable": "temporarily unavailable",
     "payPallDescription": "You can top up your personal account using a transfer from your PayPal account. Click on the PAY NOW button, go to the payment form, enter the amount you want to top up and make the transfer. The balance will be replenished automatically and will be displayed in your account.",
     "cryptoDescription": "Funds will be credited within minutes, in some cases up to an hour. This functionality is related to the specific operation of the blockchain system. You will receive a notification via email regarding the receipt of funds into your account.",
     "get-props": "get props",
@@ -275,7 +279,6 @@ export default class ModalTopUpBalanceByForegin extends Vue {
     line-height: 130%;
     text-transform: uppercase;
     text-align: center;
-    margin-bottom: 50px;
   }
 
   &__description {
@@ -307,6 +310,17 @@ export default class ModalTopUpBalanceByForegin extends Vue {
   &__method-title {
     display: flex;
 
+    &--unavailable {
+      .radio {
+        &__icon {
+        }
+
+        &__title {
+          color: #ccc;
+        }
+      }
+    }
+
     .radio {
       &__icon {
         margin-left: 30px;
@@ -318,6 +332,10 @@ export default class ModalTopUpBalanceByForegin extends Vue {
         font-weight: 500;
         line-height: 130%;
         text-transform: uppercase;
+
+        span:last-child {
+          text-transform: lowercase;
+        }
       }
     }
   }
