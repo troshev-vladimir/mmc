@@ -169,6 +169,7 @@ export default class MmcFlash extends Vue {
       const name = el.names.find((item) => item.lang === this.$i18n.locale)
         ?.value;
       const priceSum = this.getPrice(el.price);
+
       return {
         name,
         priceSum,
@@ -187,6 +188,16 @@ export default class MmcFlash extends Vue {
             ?.price || 0,
         id: "Promo",
       });
+    }
+
+    const mmcKey = selectedModules.find(el => el.id === 'MmcKey')
+
+    if (mmcKey && (vxm.user.user?.currencyId === 2 || vxm.user.user?.currencyId === 3)) {
+      selectedModules.push({
+        name: `${mmcKey.name} ${this.$t('mmc-key-delivery')}`,
+        priceSum: 80,
+        id: "MMCKeyDelivery",
+      })
     }
 
     return selectedModules;
@@ -229,8 +240,32 @@ export default class MmcFlash extends Vue {
     for (let i = 0; i < ids.length; i++) {
       const id = ids[i];
       const module = this.modulesAll.find((item) => item.id === id);
-      if (module) this.modulesChecked.push(module);
-    }
+      if (module) {
+        this.modulesChecked.push(module);
+        // const mmcKey = module.id === 'MmcKey'
+
+        // if (mmcKey && (vxm.user.user?.currencyId === 2 || vxm.user.user?.currencyId === 3)) {
+          //   this.modulesChecked.push({
+          //     id: "MMCKeyDelivery",
+          //     price: [
+          //       {"cur":"Rub","price":0},
+          //       {"cur":"Usd","price":80},
+          //       {"cur":"Eur","price":80}
+          //     ],
+          //     names: [
+          //       {"lang":"ru","value":`Usb Ключ MmcFlash доставкa`},
+          //       {"lang":"en","value":"Usb Key MmcFlash delivery"}
+          //     ],
+          //     brands: [],
+          //     descr: [],
+          //     ids: [],
+          //     images: [],
+          //     options: [],
+          //     url: []
+          //   })
+          // }
+        }
+      }
   }
 
   removeModule(id: string) {
@@ -363,13 +398,16 @@ export default class MmcFlash extends Vue {
     "empty": "По вашему запросу ничего не найдено",
     "loading": "Загрузка...",
     "title": "Оплата проведена успешно",
-    "text": "Письмо со ссылкой на  файл отправлено на вашу электронную почту"
+    "text": "Письмо со ссылкой на  файл отправлено на вашу электронную почту",
+    "mmc-key-delivery": "Цена доставки"
   },
   "en": {
     "empty": "Nothing found for your request",
     "loading": "Loading...",
     "title": "Payment completed successfully",
-    "text": "An email with a link to the file has been sent to your email"
+    "text": "An email with a link to the file has been sent to your email",
+    "mmc-key-delivery": "Delivery cost"
+
   }
 }
 </i18n>
