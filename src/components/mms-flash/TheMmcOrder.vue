@@ -1,12 +1,17 @@
 <template lang="pug">
-.order 
+.order
   .mmc-flash__selected
     .mmc-flash__selected-head.text-small(v-if="modules.length") {{$t('head')}}: {{modules.length}} {{$t('pcs')}}
     .mmc-flash__selected-head.text-small(v-else) {{$t('no-modules')}}
-    .mmc-flash__selected-content 
+    .mmc-flash__selected-content
       ul.mmc-flash__selected-list(v-if="modules.length")
-        li.mmc-flash__selected-item(v-for="(module, i) in modules", :key="i") 
-          button.mmc-flash__selected-remove(type="button", @click="removeModule(module.id)")
+        li.mmc-flash__selected-item(v-for="(module, i) in modules", :key="i")
+          button.mmc-flash__selected-remove(
+            v-if="module.id !== 'MMCKeyDelivery'"
+            type="button"
+            @click="removeModule(module.id)"
+          )
+          span(v-else style="width: 27px")
           .mmc-flash__selected-name.mr-auto {{getName(module.names)}}
           span.mmc-flash__price {{ getPrice(module.price) }}
       label.add-solutions(v-if="modules.length")
@@ -18,10 +23,10 @@
         .add-solutions__text
           p.add-solutions__title.mb-1 {{$t('add-solutions-title')}}
           p.add-solutions__subtitle.mb-0 {{$t('add-solutions-subtitle')}}
-        .mmc-flash__price 
+        .mmc-flash__price
           span.mmc-flash__old-price.mr-2 {{getOldPrice(additionalModules)}}
-          |{{ getPrice(additionalModules) }} 
-         
+          |{{ getPrice(additionalModules) }}
+
   .mmc-flash__order
     .mmc-flash__selected-head.text-small {{$t('order')}}
     .mmc-flash__order-body
@@ -49,7 +54,7 @@
       v-model="emailUnconfirmed"
       width="500"
       @click:outside="emailUnconfirmed = false"
-    ) 
+    )
       TheOrderModal(
         @close="emailUnconfirmed = false"
       )
@@ -95,7 +100,9 @@ export default class TheMmcOrder extends Vue {
 
   get isKey() {
     if (this.isKeySelected) {
-      return this.isUpdateMMCSelected ? this.count > 2 : this.count > 1;
+      return this.modules.filter((el: MmcStoreInterface.Module) => {
+        return !["MmcKey", "61", 'MMCKeyDelivery'].includes(el.id)
+      }).length;
     } else {
       return this.key.length;
     }
@@ -136,6 +143,9 @@ export default class TheMmcOrder extends Vue {
   }
 
   removeModule(id: string) {
+    if (id === 'MmcKey') {
+      this.$emit("remove-module", 'MMCKeyDelivery');
+    }
     this.$emit("remove-module", id);
   }
 
