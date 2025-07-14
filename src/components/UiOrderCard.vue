@@ -61,7 +61,7 @@
             class="link-button link-button-danger"
             @click="rejectOrder"
           >
-            
+
             <CloseIcon style="width: 20px; height: 20px; fill: #888"/>
             <span>{{ $t("rejectOrder") }}</span>
           </div>
@@ -246,8 +246,8 @@ export default {
       switch (this.order.paymentProvider) {
         case "Robocassa":
           return "Robokassa";
-        case "PayPal":
-          return "PayPal";
+        // case "PayPal":
+        //   return "PayPal";
         case "CryptoCloud":
           return "CryptoCloud";
         default:
@@ -1044,10 +1044,10 @@ export default {
     "errors": "Ошибки",
     "order-number": "Заказ №",
     "status": {
-        "accept": "Принят", 
-        "pending": "Ожидает оплаты", 
-        "payed": "Оплачен", 
-        "fulfilled": "Готов", 
+        "accept": "Принят",
+        "pending": "Ожидает оплаты",
+        "payed": "Оплачен",
+        "fulfilled": "Готов",
         "rejected": "Отменён"
     },
     "payment": {
@@ -1060,9 +1060,9 @@ export default {
     "order-description": "Описание заказа",
     "task-description": "Примененные алгоритмы",
     "button": {
-        "details": "Детали заказа", 
-        "addOrderAwailable": "Редактировать", 
-        "pay": "Перейти к оплате", 
+        "details": "Детали заказа",
+        "addOrderAwailable": "Редактировать",
+        "pay": "Перейти к оплате",
         "support": "Поддержка"
     },
     "history": "История заказов",
@@ -1082,10 +1082,10 @@ export default {
     "pay": "Pay",
     "order-number": "Order №",
     "status": {
-        "accept": "Accepted", 
-        "pending": "Waiting for payment", 
-        "payed": "Payed", 
-        "fulfilled": "Fulfilled", 
+        "accept": "Accepted",
+        "pending": "Waiting for payment",
+        "payed": "Payed",
+        "fulfilled": "Fulfilled",
         "rejected": "Cancelled"
     },
     "payment": {
@@ -1098,9 +1098,9 @@ export default {
     "order-description": "Order description",
     "task-description": "Applied algorithms",
     "button": {
-        "details": "Order details", 
-        "addOrderAwailable": "Edit", 
-        "pay": "Go to pay", 
+        "details": "Order details",
+        "addOrderAwailable": "Edit",
+        "pay": "Go to pay",
         "support": "Support"
     },
     "history": "Order history",
