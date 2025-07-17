@@ -2,6 +2,8 @@
 const path = require('path')
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
+const random = Math.round(Math.random() * 1000000)
+
 module.exports = {
   pluginOptions: {
     i18n: {
@@ -26,8 +28,8 @@ module.exports = {
       return args
     })
 
-    config.output.filename(`js/[name]--[contenthash].js`)
-    config.output.chunkFilename(`js/[name]--[contenthash].js`)
+    config.output.filename(`js/[name]--[hash]-${random}.js`)
+    config.output.chunkFilename(`js/[name]--[hash]-${random}.js`)
 
   },
   transpileDependencies: ['vuetify'],
