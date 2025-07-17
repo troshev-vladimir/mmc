@@ -11,31 +11,24 @@ module.exports = {
       enableInSFC: true,
     },
   },
-
+  filenameHashing: true,
   devServer: {
     https: true,
     host: 'localhost',
   },
 
-  configureWebpack: (config) => {
-    return {
-      devtool: process.env.NODE_ENV === 'production' ? false : 'source-map',
-      // plugins: [
-        // new BundleAnalyzerPlugin(),
-      // ]
-    }
-  },
-
   chainWebpack: (config) => {
-    config.output.filename(`js/[name]-[hash].boundle.js`)
-    config.output.chunkFilename(`js/[name]-[hash].js`)
     config.asyncChunks = true
+    config.devtool(process.env.NODE_ENV === 'production' ? false : 'source-map')
     config.plugin('html').tap((args) => {
       args[0].template = path.join(__dirname, 'public', 'index.html')
       // args[0].filename = 'app.html'
       return args
     })
-    
+
+    config.output.filename(`js/[name]--[contenthash].js`)
+    config.output.chunkFilename(`js/[name]--[contenthash].js`)
+
   },
   transpileDependencies: ['vuetify'],
 }
