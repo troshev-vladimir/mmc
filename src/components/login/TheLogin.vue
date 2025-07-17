@@ -73,12 +73,11 @@ export default class TheLogin extends Vue {
       await api.authorize.getUser();
       const isAuth = await api.authorize.isAuthenticated();
       vxm.user.setUserIsAuth(isAuth);
+      await this.redirect();
     } catch (error) {
       console.log(error);
       return;
     }
-
-    this.redirect();
   }
   setRequiredEmail() {
     this.requiredEmail = true;
@@ -96,30 +95,30 @@ export default class TheLogin extends Vue {
     return window.location.host.split(".").includes("test");
   }
 
-  redirect() {
+  async redirect() {
     const storagePrevPage = storage.pageFromLogin;
     if (storagePrevPage) {
       storage.pageFromLogin = null;
-      return this.$router.push(storagePrevPage.fullPath);
+      return await this.$router.push(storagePrevPage.fullPath);
     }
     if (!this.prevPage.name)
-      return this.$router.push({
+      return await this.$router.push({
         name: "Home",
       });
     if (this.prevPage.name === "Prices")
-      return this.$router.push({
+      return await this.$router.push({
         name: "Prices",
       });
     if (this.prevPage.name === "ManualOrder")
-      return this.$router.push({
+      return await this.$router.push({
         name: "ManualOrder",
       });
     if (this.prevPage.name === "Stock")
-      return this.$router.push({
+      return await this.$router.push({
         name: "Stock",
         params: { id: this.prevPage.params.id },
       });
-    this.$router.push({ name: "Home" });
+    await this.$router.push({ name: "Home" });
   }
 
   openErrorModal(text: string) {
