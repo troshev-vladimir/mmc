@@ -70,6 +70,11 @@ const routes: Array<RouteConfig> = [
     component: () => import("../views/MMCFlashPage.vue"),
   },
   {
+    path: "/hardware",
+    name: "HardWare",
+    component: () => import("../views/MMCFlashPageCopy.vue"),
+  },
+  {
     path: "/offer",
     name: "Offer",
     component: () => import("../views/OfferPage.vue"),

@@ -27,17 +27,17 @@ form.registration__form(@submit.prevent='sendForm')
       :placeholder='$t("organization")'
     )
   label.registration__field.registration__field_half
-    span.registration__name.text-small 
-      |{{ $t('currency') }} 
-      |{{ fields.currencyId === 1 ? `(${$t('currency-warning')})` : '' }}  
+    span.registration__name.text-small
+      |{{ $t('currency') }}
+      |{{ fields.currencyId === 1 ? `(${$t('currency-warning')})` : '' }}
     v-select(
-      v-model="fields.currencyId" 
-      :items="currencies" 
+      v-model="fields.currencyId"
+      :items="currencies"
       item-text="name"
       item-value="id"
       :placeholder="$t('currency')"
       item-disabled="isDeleted"
-      hide-details 
+      hide-details
       dense
       outlined
     )
@@ -47,9 +47,9 @@ form.registration__form(@submit.prevent='sendForm')
     span.registration__name.text-small {{$t('country') }}
     UiSelectSearch(
       :items="countries"
-      v-model="fields.countryId" 
+      v-model="fields.countryId"
       :placeholder="$t('country')"
-      hide-details 
+      hide-details
       dense
       outlined
     )
@@ -72,6 +72,16 @@ form.registration__form(@submit.prevent='sendForm')
       @input='errors.MmcFlashKey = {}'
     )
     span.registration__error(v-if='errors.MmcFlashKey') {{ errors.MmcFlashKey.error }}
+
+  label.registration__field.registration__field_full
+    span.registration__name.text-small {{ $t('mmcFlashLicence') + $t('mmcFlashLicenceTip')}}
+    input.registration__input.input-text.text-small(
+      v-model='fields.mmcFlashLicence',
+      :placeholder='$t("mmcFlashKey")',
+      type='tel',
+      @input='errors.mmcFlashLicence = {}'
+    )
+    span.registration__error(v-if='errors.mmcFlashLicence') {{ errors.mmcFlashLicence.error }}
 
   label.registration__field.registration__field_full
     span.registration__name.text-small {{ $t('phone') }}
@@ -190,6 +200,7 @@ export default class UserForm extends Props {
     phoneNumber: "",
     address: "",
     mmcFlashKey: "",
+    mmcFlashLicence: "",
     password: "",
     passwordConfirm: "",
     isUserAgreed: false,
@@ -267,6 +278,8 @@ export default class UserForm extends Props {
     "address": "Адрес",
     "mmcFlashKey": "Номер ключа MMC Flash ",
     "mmcFlashKeyTip": "(заполните, если уже пользуетесь ПО MMC Flash)",
+    "mmcFlashLicence": "Номер лицензии MMC Flash HardWare ",
+    "mmcFlashLicenceTip": "(enter if you already use MMC Flash software)",
     "password": "Пароль",
     "passwordConfirm": "Подтверждение пароля",
     "agree": "Я согласен с положениями",
@@ -286,6 +299,8 @@ export default class UserForm extends Props {
     "address": "Address",
     "mmcFlashKey": "MMC Flash key number ",
     "mmcFlashKeyTip": "(enter if you already use MMC Flash software)",
+    "mmcFlashLicence": "MMC Flash HardWare license number ",
+    "mmcFlashLicenceTip": "(enter if you already use MMC Flash software)",
     "password": "Password",
     "passwordConfirm": "Password confirmation",
     "agree": "I agree with the terms",

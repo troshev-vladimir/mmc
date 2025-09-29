@@ -9,7 +9,7 @@ header.header(:class="{hide: isHeaderHiden}")
           :to="{ name: 'Home'}"
           title="Home"
         )
-          img.header__logo-image-mmc(src="/img/logommc.svg", alt="logo" width="110" height="43" loading="lazy") 
+          img.header__logo-image-mmc(src="/img/logommc.svg", alt="logo" width="110" height="43" loading="lazy")
 
       nav.header__menu
         burger.header__burger(:links="menu")
@@ -36,15 +36,15 @@ header.header(:class="{hide: isHeaderHiden}")
               v-else
               :to="{ name: link.name}",
             ) {{ $t(link.text) }}
-          a.header__link.text(v-if="link.name === 'FAQ'" href="https://mmcflash.ru/forum/" target="_blank") {{$t('forum')}} 
-        
+          a.header__link.text(v-if="link.name === 'FAQ'" href="https://mmcflash.ru/forum/" target="_blank") {{$t('forum')}}
+
     .header_buttons
       ul.header__socials.social
         li.social__item
           a(href="https://t.me/mmc_flash" target="_blank")
             img(src="/img/index-cap/tg.svg" alt="telegramm" width="35" height="35")
         li.social__item
-      
+
           a(href="https://vk.com/mmcflashru" target="_blank" v-if="userLang === 'ru'")
             img(src="/img/index-cap/vk.svg" alt="vk" width="35" height="35")
 
@@ -56,11 +56,11 @@ header.header(:class="{hide: isHeaderHiden}")
           :active-class="'header__order_active'"
           title="New order"
         )
-        
+
         router-link.header__balance.balance(
           :to="{ name: 'Balance'}"
         )
-          .balance__icon 
+          .balance__icon
             span {{ userCurrencySymbol }}
 
           span.balance__value {{ currentBalance }}
@@ -182,6 +182,8 @@ export default class TheHeader extends Vue {
       ],
     },
     { name: "MMCFlash", text: "mmc-flash" },
+    { name: "HardWare", text: "HardWare" },
+
     { name: "Stock", text: "stock" },
     { name: "News", text: "news" },
 
@@ -269,6 +271,7 @@ export default class TheHeader extends Vue {
     "settings": "Настройки",
     "exit": "Выйти",
     "mmc-flash" : "Модули MMC Flash",
+    "HardWare" : "MMC Flash HardWare",
     "manual": "Калибровка прошивок",
     "ubout-us": "О нас",
     "subscriptions": "Мои подписки",
@@ -294,6 +297,7 @@ export default class TheHeader extends Vue {
     "exit": "Log out",
     "subscriptions": "My subscriptions",
     "mmc-flash" : "MMC Flash modules",
+    "HardWare" : "MMC Flash HardWare",
     "manual": "Manual processing",
     "ubout-us": "About us",
     "faq": "FAQ",
