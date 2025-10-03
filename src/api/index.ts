@@ -10,6 +10,7 @@ import BalanceMethods from "@/api/balance";
 import SupportMethods from "@/api/support";
 import SubscriptionMethods from "@/api/subscription";
 import MmcStoreMethods from "@/api/mmc-store";
+import HardwareStoreMethods from "@/api/hardware-store";
 import MmcMethods from "@/api/mmc";
 import OrderMethods from "@/api/order";
 import stockFile from "@/api/stockFile";
@@ -30,6 +31,7 @@ class API {
   public support: SupportMethods = new SupportMethods();
   public subscription: SubscriptionMethods = new SubscriptionMethods();
   public mmcStore: MmcStoreMethods = new MmcStoreMethods(baseURL);
+  public HardwareStore: HardwareStoreMethods = new HardwareStoreMethods(baseURL);
   public mmc: MmcMethods = new MmcMethods(baseURL);
   public order: OrderMethods = new OrderMethods();
   public stockFile: stockFile = new stockFile();
