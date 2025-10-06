@@ -2,14 +2,14 @@ import { MmcStoreInterface } from "@/interfaces/mmc-store";
 import { PaymentScriptParams } from "@/api/payment";
 import fetchWrapper from "./fetchWrapper";
 
-export default class MmcStoreMethods {
+export default class HardwareStoreMethods {
   private readonly _url: string;
   constructor(url: string) {
     this._url = url;
   }
 
   public async getMmcStoreInfo(): Promise<MmcStoreInterface.Info | null> {
-    return await fetchWrapper<any>(`/api/MmcStore/GetInfo`);
+    return await fetchWrapper<any>(`/api/MmcStore/GetInfo`, { storeType: 'MmcStore' });
   }
 
   async postData(url: string, params: {}, errorCb?: Function) {
@@ -17,7 +17,7 @@ export default class MmcStoreMethods {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
-      body: JSON.stringify(params),
+      body: JSON.stringify({...params, storeType: 'MmcStore'}),
     });
     if (!response.ok) return null;
     const data = await response.json();
@@ -27,7 +27,7 @@ export default class MmcStoreMethods {
   }
 
   public async getModules() {
-    const data = await this.postData("/api/MmcStore/GetModules", {});
+    const data = await this.postData("/api/MmcStore/GetModules", { storeType: 'MmcStore' });
     if (data) return data;
   }
 
@@ -40,7 +40,6 @@ export default class MmcStoreMethods {
       params,
       errorCb
     );
-
     if (data) return data;
     return null;
   }
@@ -60,8 +59,6 @@ export default class MmcStoreMethods {
 
 export type PaymentMmcRequest<PaymentProvider> = {
   mmcFlashKey?: string;
-  mmcFlashKeyHw?: string;
-  storeType?: string;
   moduleIds: Array<string>;
   currency: string;
   total: number;

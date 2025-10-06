@@ -76,12 +76,12 @@ form.registration__form(@submit.prevent='sendForm')
   label.registration__field.registration__field_full
     span.registration__name.text-small {{ $t('mmcFlashLicence') + $t('mmcFlashLicenceTip')}}
     input.registration__input.input-text.text-small(
-      v-model='fields.mmcFlashLicence',
+      v-model='fields.mmcFlashKeyHw',
       :placeholder='$t("mmcFlashKey")',
       type='tel',
-      @input='errors.mmcFlashLicence = {}'
+      @input='errors.mmcFlashKeyHw = {}'
     )
-    span.registration__error(v-if='errors.mmcFlashLicence') {{ errors.mmcFlashLicence.error }}
+    span.registration__error(v-if='errors.mmcFlashKeyHw') {{ errors.mmcFlashKeyHw.error }}
 
   label.registration__field.registration__field_full
     span.registration__name.text-small {{ $t('phone') }}
@@ -200,7 +200,7 @@ export default class UserForm extends Props {
     phoneNumber: "",
     address: "",
     mmcFlashKey: "",
-    mmcFlashLicence: "",
+    mmcFlashKeyHw: "",
     password: "",
     passwordConfirm: "",
     isUserAgreed: false,

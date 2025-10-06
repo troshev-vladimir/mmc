@@ -50,6 +50,7 @@ export namespace MmcStoreInterface {
     modules: Array<MmcStoreInterface.Module>;
     isMmcKeyRequired: boolean;
     isDealer: boolean;
+    mmcFlashKeyHw?: string;
     mmcFlashKey?: string;
   }
   export interface Modules {

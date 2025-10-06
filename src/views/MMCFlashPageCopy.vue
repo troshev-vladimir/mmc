@@ -15,7 +15,7 @@ import { metaOg } from "@/additionally/constants";
     TheMmcFlashCopy,
   },
 })
-export default class MMCFlashPage extends Vue {
+export default class MMCFlashPageCopy extends Vue {
   @Meta
   myMetaConfig() {
     return {

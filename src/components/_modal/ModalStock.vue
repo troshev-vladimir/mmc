@@ -143,6 +143,7 @@ v-dialog(v-model='isOpen', width='600')
     | 'Task'
     | 'Mmc'
     | 'Stock'
+    | 'Hardware'
 
   @Component({
     components: {
@@ -301,6 +302,21 @@ v-dialog(v-model='isOpen', width='600')
         case 'Mmc':
           this.paymentScriptParams = await api.mmcStore.getPaymentScriptParams({
             mmcFlashKey: this.mmcFlashKey,
+            language: vxm.user.lang,
+            moduleIds: this.options.map((el: any) => el.id),
+            currency: this.currencyName,
+            total: this.total,
+            provider,
+          })
+          this.checkPaySatusMethod = api.mmcStore.checkPayStatus.bind(
+            api.mmcStore
+          )
+          break
+
+        case 'Hardware':
+          this.paymentScriptParams = await api.mmcStore.getPaymentScriptParams({
+            mmcFlashKeyHw: this.mmcFlashKey,
+            storeType: 'MmcStoreHw',
             language: vxm.user.lang,
             moduleIds: this.options.map((el: any) => el.id),
             currency: this.currencyName,

@@ -48,7 +48,7 @@
     :currency="currencySymbol"
     :id="docmentId"
     :options="getSelectedModules"
-    purchaseType="Mmc"
+    purchaseType="Hardware"
     :mmc-flash-key="licence"
   )
   //- :mmcKey="mmcKey",
@@ -371,15 +371,15 @@ export default class MmcFlashCopy extends Vue {
   }
 
   async mounted() {
-    await api.mmcStore.getMmcStoreInfo().then((data) => {
+    await api.HardwareStore.getMmcStoreInfo().then((data) => {
       if (data) {
         this.brands = data.brands;
         this.isMmcKeyRequired = data.isMmcKeyRequired;
         this.isDiller = data.isDealer;
-        this.licence = data.mmcFlashKey || "";
+        this.licence = data.mmcFlashKeyHw || "";
       }
     });
-    await api.mmcStore.getModules().then((data) => {
+    await api.HardwareStore.getModules().then((data) => {
       this.modulesFiltered = data.items;
       this.modulesAll = data.items;
     });

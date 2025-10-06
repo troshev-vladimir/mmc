@@ -160,7 +160,7 @@ export interface RegisterParams {
   isUserAgreed: boolean;
   address?: string;
   mmcFlashKey?: string;
-  mmcFlashLicence?: string;
+  mmcFlashKeyHw?: string;
   attributes?: string;
 }
 
