@@ -376,7 +376,7 @@ export default class MmcFlashCopy extends Vue {
         this.brands = data.brands;
         this.isMmcKeyRequired = data.isMmcKeyRequired;
         this.isDiller = data.isDealer;
-        this.licence = data.mmcFlashKeyHw || "";
+        this.licence = data.mmcFlashKeyHw || vxm.user.user?.mmcFlashKeyHw  || "";
       }
     });
     await api.HardwareStore.getModules().then((data) => {

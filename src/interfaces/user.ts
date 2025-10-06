@@ -8,6 +8,7 @@ export namespace UserInterface {
     userFirstName: string;
     userMiddleName?: string;
     userLastName: string;
+    mmcFlashKeyHw?: string;
     phoneNumber: string;
     organizationName?: string;
   }

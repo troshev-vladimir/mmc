@@ -315,7 +315,7 @@ v-dialog(v-model='isOpen', width='600')
 
         case 'Hardware':
           this.paymentScriptParams = await api.mmcStore.getPaymentScriptParams({
-            mmcFlashKeyHw: this.mmcFlashKey,
+            mmcFlashKey: this.mmcFlashKey,
             storeType: 'MmcStoreHw',
             language: vxm.user.lang,
             moduleIds: this.options.map((el: any) => el.id),

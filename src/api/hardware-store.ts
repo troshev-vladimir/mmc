@@ -9,7 +9,7 @@ export default class HardwareStoreMethods {
   }
 
   public async getMmcStoreInfo(): Promise<MmcStoreInterface.Info | null> {
-    return await fetchWrapper<any>(`/api/MmcStore/GetInfo`, { storeType: 'MmcStore' });
+    return await fetchWrapper<any>(`/api/MmcStore/GetInfo`, { storeType: 'MmcStoreHw' });
   }
 
   async postData(url: string, params: {}, errorCb?: Function) {
@@ -17,7 +17,7 @@ export default class HardwareStoreMethods {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
-      body: JSON.stringify({...params, storeType: 'MmcStore'}),
+      body: JSON.stringify({...params, storeType: 'MmcStoreHw'}),
     });
     if (!response.ok) return null;
     const data = await response.json();
@@ -27,7 +27,7 @@ export default class HardwareStoreMethods {
   }
 
   public async getModules() {
-    const data = await this.postData("/api/MmcStore/GetModules", { storeType: 'MmcStore' });
+    const data = await this.postData("/api/MmcStore/GetModules", { storeType: 'MmcStoreHw' });
     if (data) return data;
   }
 
