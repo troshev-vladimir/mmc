@@ -30,9 +30,9 @@
   .mmc-flash__order
     .mmc-flash__selected-head.text-small {{$t('order')}}
     .mmc-flash__order-body
-      label.mmc-flash__order-label(v-if="!isKeySelected")
+      label.mmc-flash__order-label.mmc-flash__order-label-copy(v-if="!isKeySelected")
         span.mmc-flash__order-key.text-small {{$t('licence')}}
-        span.mmc-flash__order-wrap
+        span
           input.mmc-flash__order-input.input-text.text-small(
             :class="{'input-text_error': isInvalidKey}"
             type="text",

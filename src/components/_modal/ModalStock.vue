@@ -237,7 +237,7 @@ v-dialog(v-model='isOpen', width='600')
 
       return (
         Number(this.userBalance) >= Number(this.total) &&
-        !!(this.id || this.purchaseType === 'Mmc')
+        !!(this.id || this.purchaseType === 'Mmc' || this.purchaseType === 'Hardware')
       ) // mmc нет id
     }
 
@@ -462,7 +462,7 @@ v-dialog(v-model='isOpen', width='600')
           return
         }
 
-        if (['Mmc', 'Stock'].includes(this.purchaseType)) {
+        if (['Mmc', 'Stock', "Hardware"].includes(this.purchaseType)) {
           // @ts-expect-error
           await this.checkStatusTask(this.paymentScriptParams?.invId)
         } else {
