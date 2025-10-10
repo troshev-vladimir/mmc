@@ -109,3 +109,8 @@ You should awoid use prod build for test site due to it hasn't SEO preventions
 
 If you haven't permition for deloy on dev server, just ask a who has it and indicate a branch
 
+
+git pull origin master
+nvm use 16
+yarn && yarn serve
+https://localhost:8080/
