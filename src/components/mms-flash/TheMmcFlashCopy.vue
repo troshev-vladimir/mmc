@@ -63,10 +63,9 @@ import "@/assets/styles/imports/mmc-flash.sass";
 import { Component, Vue } from "vue-property-decorator";
 import api from "@/api";
 
-import TheModules from "@/components/mms-flash/TheMmcTable.vue";
 import TheMmcFront from "@/components/mms-flash/TheMmcFrontCopy.vue";
 import TheCarsField from "@/components/car/TheCarsField.vue";
-import TheMmcTable from "@/components/mms-flash/TheMmcTable.vue";
+import TheMmcTable from "@/components/mms-flash/TheMmcTableCopy.vue";
 import TheMmcNote from "@/components/mms-flash/TheMmcNote.vue";
 import TheMmcOrder from "@/components/mms-flash/TheMmcOrderCopy.vue";
 import { MmcStoreInterface } from "@/interfaces/mmc-store";
@@ -93,7 +92,6 @@ import { vxm } from "@/vuex";
     TheMmcNote,
     TheMmcTable,
     TheCarsField,
-    TheModules,
     TheMmcFront,
     ModalStock,
   },
