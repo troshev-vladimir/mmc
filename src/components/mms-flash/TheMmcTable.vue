@@ -19,7 +19,7 @@
                   @change="changeModules"
                 )
                 span.mmc-flash__check-box
-                span.mmc-flash__name(@click="openModalDescription(module)") {{ getName(module.names) }}
+                span.mmc-flash__name(@click.prevent="openModalDescription(module)") {{ getName(module.names) }}
             .mmc-flash__descr-note(v-if="getDescription(module.descr)")
               .mmc-flash__descr-note-box(v-html="getDescription(module.descr)")
           td.mmc-flash__cell {{ getPrice(module.price) }}
@@ -38,8 +38,8 @@
                   type="image/webp"
                 )
                 img.mmc-flash__cell-image(
-                  :src="`/img/mmc-flash/AllBrands_54.jpg`", 
-                  :alt="`Логотип`" 
+                  :src="`/img/mmc-flash/AllBrands_54.jpg`",
+                  :alt="`Логотип`"
                   loading="lazy"
                   title="All"
                 )
@@ -52,7 +52,7 @@
                   )
                   img.mmc-flash__cell-image(
                     :src="`/img/mmc-flash/${getBrand(brand)}_54.jpg`"
-                    :alt="`Логотип ${brand}`" 
+                    :alt="`Логотип ${brand}`"
                     loading="lazy"
                     :title="brand"
                   )
@@ -113,16 +113,28 @@ export default class TheMmcTable extends Vue {
   }
 
   openModalDescription(module: MmcStoreInterface.Module) {
-    this.isOpenModalDescription = true;
-    const currentDescriptionLang = module.descr.find(
-      (item) => item.lang === this.$i18n.locale
-    ) || { lang: "", value: "" };
-    this.description = currentDescriptionLang.value;
+    const newsHref = location.origin + '/news/' + module.id
+    // const newsHref = 'https://mmcflash.ru' + '/news/'
+    console.log(newsHref);
+    window.open(newsHref, '_blank');
+  }
+
+  get selectedModulesNames() {
+    return this.modules.filter(module => this.modulesId.includes(module.id)).map(el => this.getName(el.names))
   }
 
   mounted() {
     this.query = this.value;
     this.modulesId = this.checkedModulesId;
+
+    const selectedModule = this.$route.query.module
+    if (selectedModule) {
+      this.modulesId = [selectedModule] as Array<string>
+      this.changeModules()
+      this.$toasted.success(`${this.$t("preselectedModule")} (${this.selectedModulesNames.join(', ')})`, {
+        icon: "check",
+      });
+    }
   }
 
   @Watch("checkedModulesId")
@@ -143,7 +155,8 @@ export default class TheMmcTable extends Vue {
     "empty": "Ничего не найдено по запросу",
     "loading": "Загрузка",
     "no-nane": "Без названия",
-    "all-brands": "подходит для всех"
+    "all-brands": "подходит для всех",
+    "preselectedModule": "Модуль выбран"
   },
   "en": {
     "placeholder": "Search",
@@ -154,7 +167,8 @@ export default class TheMmcTable extends Vue {
     "empty": "Nothing found on request",
     "loading": "Loading",
     "no-name": "No name",
-    "all-brands": "suitable for everyone"
+    "all-brands": "suitable for everyone",
+    "preselectedModule": "Module selected"
   }
 }
 </i18n>

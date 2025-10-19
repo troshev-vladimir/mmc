@@ -119,6 +119,10 @@ export default class TheMmcTableCopy extends Vue {
     window.open(newsHref, '_blank');
   }
 
+  get selectedModulesNames() {
+    return this.modules.filter(module => this.modulesId.includes(module.id)).map(el => this.getName(el.names))
+  }
+
   mounted() {
     this.query = this.value;
     this.modulesId = this.checkedModulesId;
@@ -126,6 +130,9 @@ export default class TheMmcTableCopy extends Vue {
     if (selectedModule) {
       this.modulesId = [selectedModule] as Array<string>
       this.changeModules()
+      this.$toasted.success(`${this.$t("preselectedModule")} (${this.selectedModulesNames.join(', ')})`, {
+        icon: "check",
+      });
     }
   }
 
@@ -147,7 +154,8 @@ export default class TheMmcTableCopy extends Vue {
     "empty": "Ничего не найдено по запросу",
     "loading": "Загрузка",
     "no-nane": "Без названия",
-    "all-brands": "подходит для всех"
+    "all-brands": "подходит для всех",
+    "preselectedModule": "Модуль выбран"
   },
   "en": {
     "placeholder": "Search",
@@ -158,7 +166,8 @@ export default class TheMmcTableCopy extends Vue {
     "empty": "Nothing found on request",
     "loading": "Loading",
     "no-name": "No name",
-    "all-brands": "suitable for everyone"
+    "all-brands": "suitable for everyone",
+    "preselectedModule": "Module selected"
   }
 }
 </i18n>
