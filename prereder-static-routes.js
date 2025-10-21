@@ -23,8 +23,10 @@ exports.routes = [
 
   '/mmc-flash',
 
+  '/hardware',
+
   '/faq',
-  
+
   '/stock',
 
   '/offer',
