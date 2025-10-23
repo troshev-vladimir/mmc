@@ -206,11 +206,12 @@
 
 .mmc-flash__name
   cursor: pointer
-  @include hover
-    transition-property: color
-    transition-duration: .2s
-    &:hover
-      color: $fc_grey-dark-hover
+  text-decoration: none
+  color: #333333
+  &:hover
+    color: $fc_grey-dark-hover
+    transition: all ease .2s
+
 
 .mmc-flash__check
   position: relative

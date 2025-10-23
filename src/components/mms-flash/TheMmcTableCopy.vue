@@ -19,7 +19,10 @@
                   @change="changeModules"
                 )
                 span.mmc-flash__check-box
-                span.mmc-flash__name(@click.prevent="openModalDescription(module)") {{ getName(module.names) }}
+                a.mmc-flash__name(
+                  @click.prevent="openModalDescription(module)"
+                  :href="getModuleNewsUrl(module)"
+                ) {{ getName(module.names) }}
             .mmc-flash__descr-note(v-if="getDescription(module.descr)")
               .mmc-flash__descr-note-box(v-html="getDescription(module.descr)")
           td.mmc-flash__cell {{ getPrice(module.price) }}
@@ -112,10 +115,23 @@ export default class TheMmcTableCopy extends Vue {
     return brand.replace(/\s/g, "");
   }
 
+  getModuleNewsUrl(module: MmcStoreInterface.Module): string {
+    return location.origin + '/news/' + module.id
+  }
+
   openModalDescription(module: MmcStoreInterface.Module) {
-    const newsHref = location.origin + '/news/' + module.id
+    if (module.id === 'MmcKey' || module.id == '61') {
+      if(!this.modulesId.includes(module.id)) {
+        this.modulesId.push(module.id)
+      }else{
+        this.modulesId = this.modulesId.filter(id => id !== module.id)
+      }
+      this.changeModules()
+      return;
+    }
+
     // const newsHref = 'https://mmcflash.ru' + '/news/'
-    console.log(newsHref);
+    const newsHref = this.getModuleNewsUrl(module)
     window.open(newsHref, '_blank');
   }
 
