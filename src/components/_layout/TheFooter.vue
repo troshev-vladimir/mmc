@@ -80,8 +80,6 @@ export default class TheFooter extends Vue {
     "TopUpBalanceInstruction",
   ];
 
-
-
   get menu2() {
     return vxm.user.lang === "ru" ? [
       "Offer",
@@ -94,6 +92,7 @@ export default class TheFooter extends Vue {
     ] : [
       "Policy",
       "Contacts",
+      "HardWare",
       "subscriptions",
       "ManualEditInstruction",
       "TopUpBalanceForForeignersInstruction",
@@ -142,7 +141,7 @@ export default class TheFooter extends Vue {
     "Articles": "Статьи",
     "Prices": "Цены",
     "MMCFlash": "Модули MMC Flash",
-
+    "HardWare": "MMC Flash HardWare",
     "Subscribe": "Подпишитесь на новости",
     "Checkbox": "Ставя отметку, я даю свое согласие на обработку моих персональных данных и принимаю условия политики конфиденциальности",
     "yourEmail": "Ваш e-mail",
@@ -165,6 +164,7 @@ export default class TheFooter extends Vue {
     "Cars": "Solutions",
     "Prices": "Prices",
     "MMCFlash": "MMC Flash modules",
+    "HardWare": "MMC Flash HardWare",
     "Subscribe": "Subscribe to the newsletter",
     "Checkbox": "By checking this box, I consent to the processing of my personal data and accept the terms of the privacy policy",
     "yourEmail": "Your e-mail",
