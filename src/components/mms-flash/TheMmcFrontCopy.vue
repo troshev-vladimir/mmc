@@ -9,6 +9,8 @@
       .mmc-flesh-front__text
         p(v-html="$t('p[0]')")
         p(v-html="$t('p[1]')")
+        p(v-html="$t('p[2]')")
+        p(v-html="$t('p[3]')")
 </template>
 
 <script lang="ts">
@@ -26,6 +28,8 @@ export default class MmcFlashFrontCopy extends Vue {}
     "title": "MMC Flash HardWare",
     "p": [
       "Прежде чем приобрести модули, вам необходимо устройство MMC Flash HardWare",
+      "Устройство является интерфейсом для подключения к ЭБУ \"на столе\"",
+      "Для работы MMC Flash HardWare нужен доступ в интернет",
       "Устройство приобретается только один раз и только вместе с одним или несколькими модулями"
     ]
   },
@@ -33,6 +37,8 @@ export default class MmcFlashFrontCopy extends Vue {}
     "title": "MMC Flash HardWare",
     "p": [
       "Before purchasing modules, you need an MMC Flash HardWare device",
+      "The device serves as an interface for connecting to an ECU \"on the bench.\"",
+      "Internet access is required for MMC Flash Hardware to operate.",
       "The device is purchased only once and only together with one or more modules."
     ]
   }

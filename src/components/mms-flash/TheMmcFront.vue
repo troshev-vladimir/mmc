@@ -8,7 +8,7 @@
         img(src="/img/mmc-flash/top-key.png", loading="lazy" alt='usb-key')
       .mmc-flesh-front__text
         p(v-html="$t('p[0]')")
-        p(v-html="$t('p[1]')") 
+        p(v-html="$t('p[1]')")
 </template>
 
 <script lang="ts">

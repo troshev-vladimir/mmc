@@ -120,7 +120,7 @@ export default class TheMmcTableCopy extends Vue {
   }
 
   openModalDescription(module: MmcStoreInterface.Module) {
-    if (module.id === 'MmcKey' || module.id == '61') {
+    if (module.id === 'MmcKey' || module.id == '61' || module.id == 'MmcKeyWh') {
       if(!this.modulesId.includes(module.id)) {
         this.modulesId.push(module.id)
       }else{
