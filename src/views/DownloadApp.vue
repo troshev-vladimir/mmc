@@ -16,12 +16,6 @@ import Vue from 'vue'
 import axios from 'axios'
 
 export default Vue.extend({
-  props: {
-    filename: {
-      type: String,
-      required: true
-    }
-  },
   data() {
     return {
       status: 'loading' as 'loading' | 'success' | 'not-found' | 'error'
@@ -32,8 +26,9 @@ export default Vue.extend({
   },
   methods: {
     async downloadFile() {
-      const virtualName = this.filename
-      const realUrl = `https://api.mmcflash.ru:8888/Releases/${virtualName}`
+      const virtualName = typeof this.$route.query.virtualName === 'string'
+        ? this.$route.query.virtualName : ''
+      const realUrl = `https://api.mmcflash.ru:8888/Releases?virtualName=${virtualName}`
 
       try {
         const response = await axios.get(realUrl, { responseType: 'blob', validateStatus: () => true })
@@ -77,6 +72,6 @@ export default Vue.extend({
   font-size: 1.1em;
 }
 .error {
-  color: #e53935;
+  color: #000000;
 }
 </style>

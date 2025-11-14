@@ -66,6 +66,8 @@ exports.routes = [
   '/systems/virgin',
   '/systems/renew',
 
+  '/Releases'
+
   // '/news/about-the-individual-calibration',
 
   // '/news/egroff-for-honda-is-available-at-ecudtc',
