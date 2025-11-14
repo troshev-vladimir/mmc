@@ -16,9 +16,7 @@ export default class TheDownload extends Vue {
   empty = false;
 
   getToken() {
-    this.token = typeof this.$route.query.token === 'string'
-      ? this.$route.query.token
-      : this.$route.query.token.toString();
+    this.token = this.$route.params.token;
   }
 
   async downloadFile() {

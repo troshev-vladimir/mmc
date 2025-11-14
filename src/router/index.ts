@@ -24,7 +24,7 @@ const routes: Array<RouteConfig> = [
     component: () => import("../views/ContactsPage.vue"),
   },
   {
-    path: "/download",
+    path: "/download/:token",
     name: "Download",
     component: () => import("../views/DownloadPage.vue"),
   },
