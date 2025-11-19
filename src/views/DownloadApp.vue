@@ -28,7 +28,7 @@ export default Vue.extend({
     async downloadFile() {
       const virtualName = typeof this.$route.query.virtualName === 'string'
         ? this.$route.query.virtualName : ''
-      const realUrl = `https://api.mmcflash.ru:8888/Releases?virtualName=${virtualName}`
+      const realUrl = `https://api.mmcflash.ru:8888/Releases/${virtualName}`
 
       try {
         const response = await axios.get(realUrl, { responseType: 'blob', validateStatus: () => true })

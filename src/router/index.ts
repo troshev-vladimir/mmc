@@ -240,7 +240,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/Releases",
     name: "Releases",
-    component: () => import("../views/DownloadApp.vue"),
+    component: () => import("../views/Releases.vue"),
   },
   {
     path: "/",
