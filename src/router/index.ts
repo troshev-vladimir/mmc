@@ -239,14 +239,8 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: "/Releases",
-<<<<<<< HEAD
     name: "Releases",
-    component: () => import("../views/Releases.vue"),
-=======
-    name: "DownloadVirtual",
     component: () => import("../views/DownloadApp.vue"),
-    props: true,
->>>>>>> 2986c5f07fcd1845e6c34cc17171d48f03cfffe2
   },
   {
     path: "/",
