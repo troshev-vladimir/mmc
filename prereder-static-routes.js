@@ -65,7 +65,9 @@ exports.routes = [
   '/systems/grille-off',
   '/systems/virgin',
   '/systems/renew',
-  '/releases',
+
+  '/Releases'
+
   // '/news/about-the-individual-calibration',
 
   // '/news/egroff-for-honda-is-available-at-ecudtc',

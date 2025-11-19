@@ -70,7 +70,14 @@
             class="link-button"
             @click="downloadOrder"
           >
-            <DownloadIcon style="width: 20px; height: 20px; fill: #0562d3"/>
+            <div v-if="downloadLoading" style="margin-right: 8px;">
+              <v-progress-circular
+                indeterminate
+                color="primary"
+                :size="20"
+              ></v-progress-circular>
+            </div>
+            <DownloadIcon v-else style="width: 20px; height: 20px; fill: #0562d3"/>
             <span>{{ $t("downloadFile") }}</span>
           </div>
         </div>
@@ -239,6 +246,7 @@ export default {
       historyState: [0],
       tooltipShowAll: false,
       alertShowAll: false,
+      downloadLoading: false
     };
   },
   computed: {
@@ -504,7 +512,21 @@ export default {
       return locaised ? locaised.info : "";
     },
     async downloadOrder() {
-      await api.firmware.downloadFile(this.downloadToken);
+      try {
+        if (this.order.viewType === 'MmcStore') {
+          this.downloadLoading = true
+          const a = document.createElement('a')
+          a.href = this.downloadToken
+          a.click()
+        } else {
+          this.downloadLoading = true
+          await api.firmware.downloadFile(this.downloadToken);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+
+      this.downloadLoading = false
     },
     editTask() {
       this.$router.push({
