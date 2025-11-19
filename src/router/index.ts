@@ -238,10 +238,9 @@ const routes: Array<RouteConfig> = [
       import("../views/TopUpBalanceForForeignersInstruction.vue"),
   },
   {
-    path: "/Releases/:filename",
-    name: "DownloadVirtual",
-    component: () => import("../views/DownloadApp.vue"),
-    props: true,
+    path: "/Releases",
+    name: "Releases",
+    component: () => import("../views/Releases.vue"),
   },
   {
     path: "/",
