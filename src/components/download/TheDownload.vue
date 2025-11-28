@@ -19,15 +19,8 @@ export default class TheDownload extends Vue {
   empty = false;
 
   async downloadFile() {
-    // if (!this.token) return (this.empty = true);
-    // await api.firmware.downloadFile(this.token);
-
-    const link = document.createElement("a");
-    link.href = 'https://api.mmcflash.ru:8888/api/Firmware/DownloadFile?token=' + this.token;
-    link.download = 'FirmwareFile';
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
+    if (!this.token) return (this.empty = true);
+    await api.firmware.downloadFile(this.token);
   }
 
   mounted() {

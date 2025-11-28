@@ -513,15 +513,8 @@ export default {
     },
     async downloadOrder() {
       try {
-        if (this.order.viewType === 'MmcStore') {
-          this.downloadLoading = true
-          const a = document.createElement('a')
-          a.href = this.downloadToken
-          a.click()
-        } else {
-          this.downloadLoading = true
-          await api.firmware.downloadFile(this.downloadToken);
-        }
+        this.downloadLoading = true
+        await api.firmware.downloadFile(this.downloadToken);
       } catch (error) {
         console.log(error);
       }

@@ -30,7 +30,7 @@
   .mmc-flash__order
     .mmc-flash__selected-head.text-small {{$t('order')}}
     .mmc-flash__order-body
-      label.mmc-flash__order-label.mmc-flash__order-label-copy(v-if="!isKeySelected")
+      label.mmc-flash__order-label.mmc-flash__order-label-copy
         span.mmc-flash__order-key.text-small {{$t('licence')}}
         span
           input.mmc-flash__order-input.input-text.text-small(
@@ -102,7 +102,7 @@ export default class TheMmcOrderCopy extends Vue {
   get isKey() {
     if (this.isKeySelected) {
       return this.modules.filter((el: MmcStoreInterface.Module) => {
-        return !["MmcKeyWh", "61", 'MMCKeyDelivery'].includes(el.id)
+        return !["MmcKey", "61", 'MMCKeyDelivery'].includes(el.id)
       }).length;
     } else {
       return this.key.length;
@@ -122,7 +122,7 @@ export default class TheMmcOrderCopy extends Vue {
   }
 
   get isDisabledButton() {
-    return !this.isAuth || !this.count || !this.isKeySelectedWithModule;
+    return !this.isAuth || !this.count || (!this.value && !this.key);
   }
 
   get addSolutions() {
@@ -144,7 +144,7 @@ export default class TheMmcOrderCopy extends Vue {
   }
 
   removeModule(id: string) {
-    if (id === 'MmcKeyWh') {
+    if (id === 'MmcKey') {
       this.$emit("remove-module", 'MMCKeyDelivery');
     }
     this.$emit("remove-module", id);
