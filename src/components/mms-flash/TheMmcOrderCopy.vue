@@ -41,6 +41,7 @@
           )
           span.mmc-flash__order-error.text-small(v-if="isInvalidKey") {{$t('error')}}
       div.mmc-flash__order-total
+        p {{this.isKeySelectedWithModule}}
         span.mmc-flash__order-name.text-small {{$t('total')}}
         span.mmc-flash__order-value.text {{formattedTotal}}
       button.mmc-flash__order-button.button_accent(type="button", :disabled="isDisabledButton", @click="sendOrder") {{$t('buy')}}
@@ -93,16 +94,10 @@ export default class TheMmcOrderCopy extends Vue {
   key = "";
   emailUnconfirmed = false;
 
-  get isUpdateMMCSelected() {
-    return !!this.modules.find((el) => {
-      return el.id === "61";
-    });
-  }
-
   get isKey() {
     if (this.isKeySelected) {
       return this.modules.filter((el: MmcStoreInterface.Module) => {
-        return !["MmcKey", "61", 'MMCKeyDelivery'].includes(el.id)
+        return !["MmcKeyWh"].includes(el.id)
       }).length;
     } else {
       return this.key.length;
@@ -115,14 +110,12 @@ export default class TheMmcOrderCopy extends Vue {
     return this.isKeySelected || this.key.length;
   }
 
-  get isKeySelectedWithModule() {
-    if (this.isDiller) return this.isKeyExistsOrSelectedToBy;
-
-    return this.isKeyExistsOrSelectedToBy && this.isKey;
+  get isKeySelectedWithuotModule() {
+    return this.isKeySelected && this.modules.length === 1
   }
 
   get isDisabledButton() {
-    return !this.isAuth || !this.count || (!this.value && !this.key);
+    return !this.isAuth || !this.count || (!this.value && !this.key) || this.isKeySelectedWithuotModule;
   }
 
   get addSolutions() {
@@ -144,7 +137,7 @@ export default class TheMmcOrderCopy extends Vue {
   }
 
   removeModule(id: string) {
-    if (id === 'MmcKey') {
+    if (id === 'MmcKeyWh') {
       this.$emit("remove-module", 'MMCKeyDelivery');
     }
     this.$emit("remove-module", id);
