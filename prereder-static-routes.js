@@ -55,6 +55,8 @@ exports.routes = [
 
   '/news',
 
+  '/download',
+
   '/systems/immo',
   '/systems/euro2',
   '/systems/euro0',

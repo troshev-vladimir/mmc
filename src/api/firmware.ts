@@ -66,7 +66,7 @@ export default class FirmwareMethods {
     );
     if (!response.ok) {
       const resp = await response.json()
-      
+
       const evt = new CustomEvent("customerror", {
         detail: { error: { message: resp.Error.Message } || 'File Error' },
       });
