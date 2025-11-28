@@ -31,8 +31,15 @@
     .mmc-flash__selected-head.text-small {{$t('order')}}
     .mmc-flash__order-body
       label.mmc-flash__order-label.mmc-flash__order-label-copy(v-if="!isKeySelected")
-        span.text-small {{$t('licence')}}:
-        span {{key}}
+        span.mmc-flash__order-key.text-small {{$t('licence')}}
+        span
+          input.mmc-flash__order-input.input-text.text-small(
+            :class="{'input-text_error': isInvalidKey}"
+            type="text",
+            v-model="key",
+            @input="eventInput"
+          )
+          span.mmc-flash__order-error.text-small(v-if="isInvalidKey") {{$t('error')}}
       div.mmc-flash__order-total
         span.mmc-flash__order-name.text-small {{$t('total')}}
         span.mmc-flash__order-value.text {{formattedTotal}}
