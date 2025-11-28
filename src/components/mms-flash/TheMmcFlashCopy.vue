@@ -211,7 +211,7 @@ export default class MmcFlashCopy extends Vue {
   }
 
   get isMMCKeySelected() {
-    return !!this.modulesChecked.filter((el) => el.id === "MmcKey").length;
+    return !!this.modulesChecked.filter((el) => el.id === "MmcKeyWh").length;
   }
 
   get docmentId() {
@@ -240,7 +240,7 @@ export default class MmcFlashCopy extends Vue {
       const module = this.modulesAll.find((item) => item.id === id);
       if (module) {
         this.modulesChecked.push(module);
-        const mmcKey = module.id === 'MmcKey'
+        const mmcKey = module.id === 'MmcKeyWh'
 
         if (mmcKey && (vxm.user.user?.currencyId === 2 || vxm.user.user?.currencyId === 3)) {
             this.modulesChecked.push({

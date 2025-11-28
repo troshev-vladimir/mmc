@@ -27,12 +27,12 @@
               .mmc-flash__descr-note-box(v-html="getDescription(module.descr)")
           td.mmc-flash__cell {{ getPrice(module.price) }}
           td.mmc-flash__cell.hide-on-tablet
-            div(v-if="module.id === 'MmcKey'")
+            div(v-if="module.id === 'MmcKeyWh'")
             ul.mmc-flash__option-list(v-else-if="module.options.length" )
               li.mmc-flash__option-item(v-for="(option, i) in module.options", :key="i") {{option.icon}}
                 span.mmc-flash__option-note(v-if="getTitle(option.descr)") {{getTitle(option.descr)}}
           td.mmc-flash__cell.hide-on-mobile
-            .logo(v-if="module.id === 'MmcKey'")
+            .logo(v-if="module.id === 'MmcKeyWh'")
               img.mmc-flash__cell-image(:src="`/img/logommc.svg`", :alt="`Логотип`" loading="lazy")
             .logo(v-else-if="module.id === '61'")
               picture.mmc-flash__cell-picture

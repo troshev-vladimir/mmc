@@ -63,18 +63,6 @@ export default class NewPage extends Vue {
           content: this.post?.published,
         },
       ],
-      link: [
-        {
-          rel: 'canonical',
-          hreflang: 'en-US',
-          href: 'https://mmcflash.eu' + window.location.pathname
-        },
-        {
-          rel: 'alternate',
-          hreflang: 'ru-RU',
-          href: 'https://mmcflash.ru' + window.location.pathname,
-        },
-      ],
     };
   }
 

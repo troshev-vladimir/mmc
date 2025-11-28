@@ -28,7 +28,7 @@
             )
             span.email-error(v-if="emailError") {{emailError}}
 
-        
+
         .modal-stock__line
           label.modal-stock__check
             input.modal-stock__check-input(type="checkbox", required=true)
@@ -42,8 +42,8 @@
             |
             router-link.link_blue(:to="{ name: 'Agreement'}", target="_blank") {{ $t('policy[3]') }}
           span.modal-stock__total.text-big.fw_bold {{ $t('total') }}: {{ total }} {{ currencySymbol }}
-        
-          
+
+
         .modal-stock__btn-box
           button.modal-stock__button.button_blue.text {{ $t('button') }}
 </template>
@@ -174,7 +174,7 @@ export default class ModalMmcOrder extends Vue {
   }
 
   get isSelectedKey() {
-    return this.modules.findIndex((el) => el.id === "MmcKey") + 1;
+    return this.modules.findIndex((el) => el.id === "MmcKey" || el.id === "MmcKeyWh") + 1;
   }
 
   async mounted() {
