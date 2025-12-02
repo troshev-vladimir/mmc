@@ -26,11 +26,10 @@
         .mmc-flash__price
           span.mmc-flash__old-price.mr-2 {{getOldPrice(additionalModules)}}
           |{{ getPrice(additionalModules) }}
-
   .mmc-flash__order
     .mmc-flash__selected-head.text-small {{$t('order')}}
     .mmc-flash__order-body
-      label.mmc-flash__order-label.mmc-flash__order-label-copy
+      label.mmc-flash__order-label.mmc-flash__order-label-copy(v-if="!isKeySelected")
         span.mmc-flash__order-key.text-small {{$t('licence')}}
         span
           input.mmc-flash__order-input.input-text.text-small(
@@ -41,7 +40,6 @@
           )
           span.mmc-flash__order-error.text-small(v-if="isInvalidKey") {{$t('error')}}
       div.mmc-flash__order-total
-        p {{this.isKeySelectedWithModule}}
         span.mmc-flash__order-name.text-small {{$t('total')}}
         span.mmc-flash__order-value.text {{formattedTotal}}
       button.mmc-flash__order-button.button_accent(type="button", :disabled="isDisabledButton", @click="sendOrder") {{$t('buy')}}
@@ -97,12 +95,14 @@ export default class TheMmcOrderCopy extends Vue {
   get isKey() {
     if (this.isKeySelected) {
       return this.modules.filter((el: MmcStoreInterface.Module) => {
-        return !["MmcKeyWh"].includes(el.id)
+        return !["MmcStoreHw"].includes(el.id)
       }).length;
     } else {
       return this.key.length;
     }
   }
+
+
 
   get isKeyExistsOrSelectedToBy() {
     if (!this.isMmcKeyRequired) return false;
@@ -110,12 +110,12 @@ export default class TheMmcOrderCopy extends Vue {
     return this.isKeySelected || this.key.length;
   }
 
-  get isKeySelectedWithuotModule() {
-    return this.isKeySelected && this.modules.length === 1
+  get isKeySelectedWithModule() {
+    return this.isKeySelected ? this.modules.length >= 2 : this.isKeyExistsOrSelectedToBy && this.isKey;
   }
 
   get isDisabledButton() {
-    return !this.isAuth || !this.count || (!this.value && !this.key) || this.isKeySelectedWithuotModule;
+    return !this.isAuth || !this.count || !this.isKeySelectedWithModule;
   }
 
   get addSolutions() {
@@ -137,7 +137,7 @@ export default class TheMmcOrderCopy extends Vue {
   }
 
   removeModule(id: string) {
-    if (id === 'MmcKeyWh') {
+    if (id === 'MmcStoreHw') {
       this.$emit("remove-module", 'MMCKeyDelivery');
     }
     this.$emit("remove-module", id);
