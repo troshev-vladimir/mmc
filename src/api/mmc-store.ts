@@ -60,6 +60,7 @@ export default class MmcStoreMethods {
 
 export type PaymentMmcRequest<PaymentProvider> = {
   mmcFlashKey?: string;
+  MmcFlashKeyHw?: string;
   storeType?: string;
   moduleIds: Array<string>;
   currency: string;
