@@ -114,14 +114,15 @@ export default class Cars extends Vue {
     return "";
   }
 
-  async created() {
+async created() {
     this.brands = [
-      "Ford",
-      "Mazda",
+      "Isuzu",
       "Nissan",
       "Mitsubishi",
+      "Honda",
+      "Ford",
+      "Mazda",
       "Infiniti",
-      "Isuzu",
       "Hyundai",
       "Kia",
       "Subaru",
@@ -131,7 +132,6 @@ export default class Cars extends Vue {
       "Volkswagen",
       "Renault",
       "Acura",
-      "Honda",
       "Toyota",
       "Lexus",
       "Porsche",
@@ -141,7 +141,6 @@ export default class Cars extends Vue {
     await this.getStartCars();
     document.dispatchEvent(new Event("app-prerender"));
   }
-}
 </script>
 
 <i18n>
