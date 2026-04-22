@@ -12,7 +12,7 @@
   span.load-file__text.text-small(v-text="$t('text1')")
   span.load-file__text.text-small(v-text="$t('text2')")
   label.load-file__field
-    input.load-file__input(type="file", @change="eventLoadFile" accept=".bin, .hex")
+    input.load-file__input(type="file", @change="eventLoadFile" accept=".bin, .hex, .zip, .rar, .7z, .cpt, .cptm")
     span.load-file__button.button-outline_blue(v-text="$t('choose')")
     span.load-file__note.text(v-if="fileName", v-text="fileName")
     span.load-file__note.text(v-else, v-text="$t('notChoose')")
@@ -126,14 +126,14 @@ export default class LoadFile extends Vue {
 {
   "ru": {
     "text1": "Загрузите файл",
-    "text2": "Файл в формате .BIN",
+    "text2": "Файл в формате .BIN .ZIP .RAR",
     "text3": "Загрузите файл не более 15 Mb",
     "choose": "Выберите файл",
     "notChoose": "Файл не выбран"
   },
   "en": {
     "text1": "Upload file",
-    "text2": "File in .BIN format",
+    "text2": "File in .BIN .ZIP .RAR format",
     "text3": "Upload a file no larger than 15 Mb",
     "choose": "Select file",
     "notChoose": "File not selected"

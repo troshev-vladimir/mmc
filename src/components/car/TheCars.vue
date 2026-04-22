@@ -141,6 +141,7 @@ async created() {
     await this.getStartCars();
     document.dispatchEvent(new Event("app-prerender"));
   }
+}
 </script>
 
 <i18n>
