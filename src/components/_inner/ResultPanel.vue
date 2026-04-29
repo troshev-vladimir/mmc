@@ -44,6 +44,7 @@
         button.button_blue.text.buy(
           type="button",
           v-text="$t('goToOrder')",
+          :disabled="isProcessing",
           @click="goToOrder()"
         )
       template(v-else)
@@ -51,14 +52,14 @@
           type="button",
           v-text="$t('buyBtn')",
           v-if="!isSubscribed || isLimitSubscription"
-          :disabled="noFile || isEmptyForm"
+          :disabled="noFile || isEmptyForm || isProcessing",
           @click="buyTask"
         )
         button.button_blue.text.buy(
           type="button",
           v-text="$t('getSolutionBtn')",
           v-if="isSubscribed"
-          :disabled="noFile || isEmptyForm"
+          :disabled="noFile || isEmptyForm || isProcessing",
           @click="getSolution"
         )
   modal-stock(
@@ -130,6 +131,9 @@ export default class ResultPanel extends Vue {
   isShowProcessFile = false;
   emailUnconfirmed = false;
   
+  // New variable to track button processing state
+  isProcessing = false;
+
   get isEmptyForm(): any {
     if (
       (this.task.patches.find((item: any) => item.isSelected) &&
@@ -217,6 +221,8 @@ export default class ResultPanel extends Vue {
   }
 
   getSolution(): any {
+    if (this.isProcessing) return; // Prevent multiple clicks
+    this.isProcessing = true;
     this.isShowProcessFile = true;
     this.$emit("save-task", {
       done: () => {
@@ -228,11 +234,19 @@ export default class ResultPanel extends Vue {
                 .getDownloadLink(this.task.taskId)
                 .then((response: any) => {
                   this.isShowProcessFile = false;
+                  this.isProcessing = false; // Reset on success
                   this.downloadToken = response;
                   this.showDownloadModal = true;
-                  // api.firmware.downloadFile(response);
+                })
+                .catch(() => {
+                  this.isShowProcessFile = false;
+                  this.isProcessing = false; // Reset on error
                 });
             }
+          })
+          .catch(() => {
+            this.isShowProcessFile = false;
+            this.isProcessing = false; // Reset on error
           });
       },
     });
@@ -262,6 +276,7 @@ export default class ResultPanel extends Vue {
   }
 
   goToOrder() {
+    if (this.isProcessing) return; // Prevent multiple clicks
     if (!this.isAuth) {
       const evt = new CustomEvent("auth-error");
       window.dispatchEvent(evt);
@@ -271,6 +286,7 @@ export default class ResultPanel extends Vue {
       this.emailUnconfirmed = true;
       return;
     }
+    this.isProcessing = true; // Disable button
     this.$router.push({ name: "Order", params: {
       type: this.$route.params.type,
       brand: this.$route.params.brand,
@@ -319,11 +335,20 @@ export default class ResultPanel extends Vue {
   }
 
   buyTask() {
+    if (this.isProcessing) return; // Prevent multiple clicks
     if (!vxm.user.user?.emailConfirmed) {
       this.emailUnconfirmed = true;
       return;
     }
-    if (this.price && !this.noFile) this.$emit("buy-task");
+    if (this.price && !this.noFile) {
+      this.isProcessing = true; // Disable button immediately
+      this.$emit("buy-task");
+    }
+  }
+
+  // Expose this method so the parent component can re-enable the button if the API fails
+  resetProcessingState() {
+    this.isProcessing = false;
   }
 
   async created() {

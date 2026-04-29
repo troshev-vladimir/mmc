@@ -27,8 +27,8 @@
       v-if="buy",
       type="button",
       v-text="$t('buy')",
-      @click="buyTask"
-      :disabled="!price || noFile"
+      @click="buyTask",
+      :disabled="!price || noFile || isBuying" 
     )
   button.buy-panel__button.button_blue.text.buy-absolute-btn(v-else-if="!price", type="button", v-text="$t('button')", disabled=true)
   router-link.buy-panel__button.button_blue.text.buy-absolute-btn(v-else, :to="{ name: 'Order'}", v-text="$t('button')")
@@ -51,6 +51,7 @@ export default class BayPanel extends Vue {
   @Prop({ type: String, default: "" }) readonly codeDescription!: string;
 
   promoCode = this.code;
+  isBuying = false; // <-- 1. Add this new state variable
 
   checkCode() {
     if (this.promoCode.length !== 5 && this.promoCode.length) return;
@@ -62,7 +63,16 @@ export default class BayPanel extends Vue {
   }
 
   buyTask() {
-    if (this.price && !this.noFile) this.$emit("buy-task");
+    // 2. Check if already buying to prevent multiple clicks
+    if (this.price && !this.noFile && !this.isBuying) {
+      this.isBuying = true; // <-- 3. Disable the button immediately
+      this.$emit("buy-task");
+    }
+  }
+
+  // 4. (Optional but recommended) Method to reset the state if the purchase fails
+  resetBuyingState() {
+    this.isBuying = false;
   }
 
   get finalResult(): string {
