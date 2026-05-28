@@ -10,28 +10,36 @@
         div
           label.buy-panel__promo-field
             input.buy-panel__promo-input.text-small.input-text(
-                v-model="promoCode",
-                :placeholder="$t('name')",
-                minlength=5,
-                maxlength="5",
-                @input="checkCode",
+                v-model="promoCode"
+                :placeholder="$t('name')"
+                minlength="5" 
+                maxlength="5"
+                @input="checkCode"
                 @blur="eventChangePromoCode"
               )
             span.buy-panel__promo-note.text-small(v-text="$t('note')")         
       span.buy-panel__sale.text-small(v-if="codeDescription" v-html="$t('promoDescription')") 
-      //-span.buy-panel__pre.text-small {{ $t('subtotal') }}: {{ price }} {{ currency }}
     .buy-panel__box
       span.buy-panel__result.fw_bold {{ $t('total') }}: {{ finalResult }}
       .buy-panel__btn-box
   button.buy-panel__button.button_blue.text.buy-absolute-btn(
-      v-if="buy",
-      type="button",
-      v-text="$t('buy')",
-      @click="buyTask",
+      v-if="buy"
+      type="button"
+      v-text="$t('buy')"
+      @click="buyTask"
       :disabled="!price || noFile || isBuying" 
     )
-  button.buy-panel__button.button_blue.text.buy-absolute-btn(v-else-if="!price", type="button", v-text="$t('button')", disabled=true)
-  router-link.buy-panel__button.button_blue.text.buy-absolute-btn(v-else, :to="{ name: 'Order'}", v-text="$t('button')")
+  button.buy-panel__button.button_blue.text.buy-absolute-btn(
+      v-else-if="!price" 
+      type="button" 
+      v-text="$t('button')" 
+      disabled=true
+    )
+  router-link.buy-panel__button.button_blue.text.buy-absolute-btn(
+      v-else 
+      :to="{ name: 'Order'}" 
+      v-text="$t('button')"
+    )
 </template>
 
 <script lang="ts">
@@ -43,44 +51,51 @@ import storage from "@/storage";
 export default class BayPanel extends Vue {
   @Prop({ type: String, default: "₽" }) readonly currency!: string;
   @Prop({ type: Number, default: 0 }) readonly price!: number;
-  @Prop({ type: Number, default: 1 }) readonly discount!: number;
+  @Prop({ type: Number, default: 0 }) readonly discount!: number;
   @Prop({ type: Boolean, default: false }) readonly buy!: boolean;
   @Prop({ type: Boolean, default: false }) readonly noFile!: boolean;
   @Prop({ type: String, default: "" }) readonly code!: string;
   @Prop({ type: Boolean, default: false }) readonly codeHide!: boolean;
   @Prop({ type: String, default: "" }) readonly codeDescription!: string;
 
-  promoCode = this.code;
-  isBuying = false; // <-- 1. Add this new state variable
+  promoCode: string = this.code || "";
+  isBuying: boolean = false;
 
-  checkCode() {
+  checkCode(): void {
     if (this.promoCode.length !== 5 && this.promoCode.length) return;
     this.eventChangePromoCode();
   }
 
-  eventChangePromoCode() {
+  eventChangePromoCode(): void {
     this.$emit("change-promo-code", this.promoCode);
   }
 
-  buyTask() {
-    // 2. Check if already buying to prevent multiple clicks
+  buyTask(): void {
     if (this.price && !this.noFile && !this.isBuying) {
-      this.isBuying = true; // <-- 3. Disable the button immediately
+      this.isBuying = true;
       this.$emit("buy-task");
     }
   }
 
-  // 4. (Optional but recommended) Method to reset the state if the purchase fails
-  resetBuyingState() {
+  // Expose this method so the parent component can re-enable the button if the API fails
+  resetBuyingState(): void {
     this.isBuying = false;
   }
 
   get finalResult(): string {
-    return `${this.price - this.discount} ${this.currency}`;
+    // Prevent negative results if discount exceeds price somehow
+    const result = Math.max(0, this.price - this.discount);
+    return `${result} ${this.currency}`;
   }
 
   get login(): boolean {
-    return !!storage.user;
+    // SSR/Prerender safety: If storage relies on window/localStorage, 
+    // it will throw an error during the build step. We catch it here.
+    try {
+      return !!storage?.user;
+    } catch {
+      return false;
+    }
   }
 }
 </script>

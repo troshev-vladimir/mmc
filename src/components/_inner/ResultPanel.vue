@@ -130,11 +130,13 @@ export default class ResultPanel extends Vue {
   showDownloadModal = false;
   isShowProcessFile = false;
   emailUnconfirmed = false;
-  
-  // New variable to track button processing state
   isProcessing = false;
 
   get isEmptyForm(): any {
+    // Safety check: if task is null (which it defaults to), don't crash prerender
+    if (!this.task || !this.task.patches || !this.task.taskDtcCurrent) {
+      return true;
+    }
     if (
       (this.task.patches.find((item: any) => item.isSelected) &&
         !this.isAddOrder) ||
@@ -147,7 +149,7 @@ export default class ResultPanel extends Vue {
   }
 
   get isManualProcessing() {
-    return this.task?.vehicle.isOfflineSolution;
+    return this.task?.vehicle?.isOfflineSolution;
   }
 
   boughtSubscription() {
@@ -172,6 +174,7 @@ export default class ResultPanel extends Vue {
   }
 
   changeTask() {
+    if (!this.task) return; // Prevent prerender crash if task prop is null
     this.restoreSubscriptionFlags();
     if (this.task.isSubscriptionAvailable === false) {
       this.isOnlyBuy = true;
@@ -221,7 +224,7 @@ export default class ResultPanel extends Vue {
   }
 
   getSolution(): any {
-    if (this.isProcessing) return; // Prevent multiple clicks
+    if (this.isProcessing) return;
     this.isProcessing = true;
     this.isShowProcessFile = true;
     this.$emit("save-task", {
@@ -234,19 +237,23 @@ export default class ResultPanel extends Vue {
                 .getDownloadLink(this.task.taskId)
                 .then((response: any) => {
                   this.isShowProcessFile = false;
-                  this.isProcessing = false; // Reset on success
+                  this.isProcessing = false;
                   this.downloadToken = response;
                   this.showDownloadModal = true;
                 })
                 .catch(() => {
                   this.isShowProcessFile = false;
-                  this.isProcessing = false; // Reset on error
+                  this.isProcessing = false;
                 });
+            } else {
+              // FIX: Reset processing state if response is falsy
+              this.isShowProcessFile = false;
+              this.isProcessing = false;
             }
           })
           .catch(() => {
             this.isShowProcessFile = false;
-            this.isProcessing = false; // Reset on error
+            this.isProcessing = false;
           });
       },
     });
@@ -254,10 +261,11 @@ export default class ResultPanel extends Vue {
 
   closeDownloadModal() {
     this.showDownloadModal = false;
-    this.$router.push({ name: "History" });
+    // FIX: Catch router push to prevent unhandled promise rejection during prerender
+    this.$router.push({ name: "History" }).catch(() => {/**/});
   }
 
-  getSubscriptionDesc(): void {
+  getSubscriptionDesc(): string {
     return getLangIdObject(this.task.subscription.subscriptionInfo).descr;
   }
 
@@ -276,7 +284,7 @@ export default class ResultPanel extends Vue {
   }
 
   goToOrder() {
-    if (this.isProcessing) return; // Prevent multiple clicks
+    if (this.isProcessing) return;
     if (!this.isAuth) {
       const evt = new CustomEvent("auth-error");
       window.dispatchEvent(evt);
@@ -286,7 +294,8 @@ export default class ResultPanel extends Vue {
       this.emailUnconfirmed = true;
       return;
     }
-    this.isProcessing = true; // Disable button
+    this.isProcessing = true;
+    // FIX: Catch router push to prevent unhandled promise rejection during prerender
     this.$router.push({ name: "Order", params: {
       type: this.$route.params.type,
       brand: this.$route.params.brand,
@@ -299,14 +308,12 @@ export default class ResultPanel extends Vue {
       model: this.$route.query.model,
       engine: this.$route.query.engine,
       ecu: this.$route.query.ecu,
-    } });
+    } }).catch(() => {/**/});
   }
 
   async clickHandler() {
     if (!this.isAuth) {
-      this.$router.push({
-        name: "Login",
-      });
+      await this.$router.push({ name: "Login" }).catch(() => {/**/});
       return;
     } else {
       const order = await orderFactory("create");
@@ -314,9 +321,7 @@ export default class ResultPanel extends Vue {
         order.vehicleType = "Car/Truck/Buss";
         vxm.dto.dto = order;
       }
-      this.$router.push({
-        name: "Order",
-      });
+      await this.$router.push({ name: "Order" }).catch(() => {/**/});
     }
   }
 
@@ -327,7 +332,6 @@ export default class ResultPanel extends Vue {
 
   get subscriptionId(): any {
     return this.task.subscription.subscriptionId;
-    //return 11;
   }
 
   get subscriptionPrice(): string {
@@ -335,18 +339,17 @@ export default class ResultPanel extends Vue {
   }
 
   buyTask() {
-    if (this.isProcessing) return; // Prevent multiple clicks
+    if (this.isProcessing) return;
     if (!vxm.user.user?.emailConfirmed) {
       this.emailUnconfirmed = true;
       return;
     }
     if (this.price && !this.noFile) {
-      this.isProcessing = true; // Disable button immediately
+      this.isProcessing = true;
       this.$emit("buy-task");
     }
   }
 
-  // Expose this method so the parent component can re-enable the button if the API fails
   resetProcessingState() {
     this.isProcessing = false;
   }
