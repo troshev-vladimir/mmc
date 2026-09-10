@@ -1,6 +1,6 @@
 import fetchWrapper from "./fetchWrapper";
 import { Balance } from "@/interfaces/balance";
-import type { PaymentScriptParams } from "./payment";
+import type { PaymentProvider, PaymentScriptParams } from "./payment";
 import { vxm } from "@/vuex";
 
 export default class BalanceMethods {
@@ -27,10 +27,10 @@ export default class BalanceMethods {
     );
   }
 
-  public async getPaymentScriptParams(
-    params: Balance.ScriptparamsParams
-  ): Promise<PaymentScriptParams<typeof params.provider> | undefined> {
-    return await fetchWrapper<PaymentScriptParams<typeof params.provider>>(
+  public async getPaymentScriptParams<T extends PaymentProvider>(
+    params: Balance.ScriptparamsParams<T>
+  ): Promise<PaymentScriptParams<T> | undefined> {
+    return await fetchWrapper<PaymentScriptParams<T>>(
       "/api/Balance/GetPaymentScriptParams",
       {},
       "POST",

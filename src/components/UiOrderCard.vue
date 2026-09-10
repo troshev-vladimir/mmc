@@ -258,6 +258,8 @@ export default {
         //   return "PayPal";
         case "CryptoCloud":
           return "CryptoCloud";
+        case "LavaTop":
+          return "LavaTop";
         default:
           return "";
       }

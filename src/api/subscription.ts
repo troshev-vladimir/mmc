@@ -21,9 +21,9 @@ export default class SubscriptionMethods {
     );
   }
 
-  public async getPaymentScriptParams<T>(
+  public async getPaymentScriptParams<T extends PaymentProvider>(
     id: any,
-    provider: PaymentProvider
+    provider: T
   ): Promise<PaymentScriptParams<T>> {
     return await fetchWrapper<PaymentScriptParams<T>>(
       `/api/Subscription/GetPaymentScriptParams`,

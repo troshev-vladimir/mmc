@@ -39,9 +39,11 @@ export default class PaymentMethods {
   }
 }
 
-export type PaymentProvider = "Robocassa" | "CryptoCloud" | "Balance";
+export type PaymentProvider = "Robocassa" | "CryptoCloud" | "LavaTop" | "Balance";
 export type PaymentScriptParams<T> = T extends "Robocassa"
   ? PaymentInterface.PaymentScriptParamsRobocassa
   : T extends "CryptoCloud"
     ? PaymentInterface.PaymentScriptParamsCryptoCloud
-    : PaymentInterface.PaymentScriptParamsBalance;
+    : T extends "LavaTop"
+      ? PaymentInterface.PaymentScriptParamsLavaTop
+      : PaymentInterface.PaymentScriptParamsBalance;

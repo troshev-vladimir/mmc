@@ -22,4 +22,9 @@ export namespace PaymentInterface {
     documentId: number;
     state: "Acceptable" | "Insufficient";
   }
+
+  export interface PaymentScriptParamsLavaTop {
+    paymentUrl: string;
+    documentId: number;
+  }
 }

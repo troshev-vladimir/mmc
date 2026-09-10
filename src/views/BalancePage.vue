@@ -48,6 +48,7 @@
     <ModalTopUpBalanceByForegin
       v-else-if="isEmailConfirmed"
       v-model="isTopUpBalanceModal"
+      @input="onModalChange"
     />
   </div>
 </template>

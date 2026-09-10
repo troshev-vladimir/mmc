@@ -32,11 +32,11 @@ export namespace Balance {
     items: Transaction[];
   }
 
-  export interface ScriptparamsParams {
+  export interface ScriptparamsParams<T extends PaymentProvider = PaymentProvider> {
     language: string;
     currency: string;
     amonth: number;
-    provider: PaymentProvider;
+    provider: T;
   }
 
   export interface OpenSupportParams {

@@ -1,42 +1,52 @@
 const requestCount = 120;
-let runPaymentTimer = true;
-function timeout(): Promise<null> {
-  return new Promise((resolve) => {
-    setTimeout(resolve, 4000);
-  });
-}
-
-function checkFocus() {
-  if (document.activeElement == document.querySelector("#robokassa_iframe")) {
-    console.log("iframe has focus");
-    runPaymentTimer = true;
-  } else {
-    const event = new Event("closeRobokassaIframe");
-    document.dispatchEvent(event);
-    setTimeout(() => {
-      runPaymentTimer = false;
-    }, 20000);
-  }
-}
 
 export default async function checkPaymentStatus(
   id: number | string,
-  cb: Function
+  cb: Function,
+  options: {
+    trackRobokassaFocus?: boolean;
+    isCancelled?: () => boolean;
+  } = {}
 ): Promise<boolean> {
-  runPaymentTimer = true;
+  const { trackRobokassaFocus = true, isCancelled = () => false } = options;
+  let runPaymentTimer = true;
+  let requestTimer: ReturnType<typeof setTimeout> | undefined;
+  let focusTimer: ReturnType<typeof setTimeout> | undefined;
 
-  for (let i = 0; i < requestCount; i++) {
-    if (!runPaymentTimer) return false;
-    const status = await cb(id);
-
-    if (status === "Paid") return true;
-
-    if (i === requestCount - 1 || status === "Error") return false;
-
-    await timeout();
-    if (status === "Paid") return true;
-    checkFocus();
+  function checkFocus() {
+    if (document.activeElement === document.querySelector("#robokassa_iframe")) {
+      if (focusTimer !== undefined) clearTimeout(focusTimer);
+      focusTimer = undefined;
+    } else {
+      document.dispatchEvent(new Event("closeRobokassaIframe"));
+      if (focusTimer === undefined) {
+        focusTimer = setTimeout(() => {
+          runPaymentTimer = false;
+        }, 20000);
+      }
+    }
   }
 
-  return false;
+  try {
+    for (let i = 0; i < requestCount; i++) {
+      if (isCancelled() || !runPaymentTimer) return false;
+      const status = await cb(id);
+      if (isCancelled() || !runPaymentTimer) return false;
+
+      if (status === "Paid") return true;
+      if (i === requestCount - 1 || status === "Error") return false;
+
+      await new Promise<void>((resolve) => {
+        requestTimer = setTimeout(resolve, 4000);
+      });
+      requestTimer = undefined;
+      if (isCancelled() || !runPaymentTimer) return false;
+      if (trackRobokassaFocus) checkFocus();
+    }
+
+    return false;
+  } finally {
+    if (requestTimer !== undefined) clearTimeout(requestTimer);
+    if (focusTimer !== undefined) clearTimeout(focusTimer);
+  }
 }

@@ -108,11 +108,23 @@ v-dialog(v-model='isOpen', width='600')
           :disabled='isButtonDisabled || replenishBalanceAmount <= 0',
           @click='palanishCustomSumm'
         ) {{ $t('accept-summ') }}
+        button.modal-stock__btn.button_accent.mt-2(
+          type='button',
+          v-if='canUserPayWithLavaTop',
+          :disabled='isButtonDisabled || !isLavaTopAmountValid',
+          @click='payWithLavaTop(true)'
+        ) {{ $t('top-up-lavatop') }}
     button.modal-stock__btn.modal-stock__instant-pay.button_accent(
       :disabled='isButtonDisabled',
       v-if='!isBalanceAmountMoreThenPrice && canUserPayWithCard && total',
       @click='payWithCard'
     ) {{ $t('instant-pay') }}
+    button.modal-stock__btn.button_accent.mt-2(
+      type='button',
+      :disabled='isButtonDisabled',
+      v-if='!isBalanceAmountMoreThenPrice && canUserPayWithLavaTop && total > 0',
+      @click='payWithLavaTop()'
+    ) {{ $t('pay-lavatop') }}
 </template>
 
 <script lang="ts">
@@ -125,6 +137,7 @@ v-dialog(v-model='isOpen', width='600')
   import numberFormatter from '@/additionally/formatters'
   import StockLine from './StockLine.vue'
   import checkPaymentStatus from '@/additionally/makePulling'
+  import openLavaTopPayment from '@/additionally/lavaTopPayment'
   import { TaskInterface } from '@/interfaces/task'
   import Dtc = TaskInterface.Dtc
   import getCurrencyName from '@/additionally/getCurrencyName'
@@ -170,12 +183,14 @@ v-dialog(v-model='isOpen', width='600')
     paymentScriptParams:
       | null
       | undefined
-      | PaymentScriptParams<'Robocassa' | 'CryptoCloud' | 'Balance'> = null
+      | PaymentScriptParams<PaymentProvider> = null
     checkPaySatusMethod?: Function = undefined
     email = ''
     emailError = ''
     isEmailrequired = false
     loading = false
+    lavaTopPending = false
+    lavaTopAttempt = 0
     isDetailsWrapped = true
     replenishBalance = false
     replenishBalanceAmount = 0
@@ -196,6 +211,7 @@ v-dialog(v-model='isOpen', width='600')
       return this.value
     }
     set isOpen(value) {
+      if (!value) this.cancelLavaTopPayment()
       this.$emit('input', value)
     }
 
@@ -210,7 +226,7 @@ v-dialog(v-model='isOpen', width='600')
     }
 
     get isButtonDisabled() {
-      return (this.isEmailrequired && !this.email) || !this.acception
+      return this.loading || (this.isEmailrequired && !this.email) || !this.acception
     }
 
     get lang() {
@@ -251,7 +267,7 @@ v-dialog(v-model='isOpen', width='600')
       return ''
     }
 
-    async beforeStartPayment() {
+    async beforeStartPayment(isCancelled: () => boolean = () => false) {
       if (this.isEmailrequired) {
         try {
           const responce = await api.order.changeEmail({
@@ -259,24 +275,26 @@ v-dialog(v-model='isOpen', width='600')
             lang: vxm.user.lang,
           })
         } catch (error) {
-          this.emailError = error.errors[0]?.error
-          return
+          if (isCancelled()) return false
+          this.emailError = error.errors?.[0]?.error || String(this.$t('email-error'))
+          return false
         }
+        if (isCancelled()) return false
         this.emailError = ''
         await api.authorize.getUser()
       }
+      if (isCancelled()) return false
       this.loading = true
+      return true
     }
 
     async getPaymentScriptParams(provider: PaymentProvider) {
-      console.log(this.purchaseType);
-
       switch (this.purchaseType) {
         case 'Subscription':
           this.paymentScriptParams =
             await api.subscription.getPaymentScriptParams(this.id, provider)
           this.checkPaySatusMethod = api.subscription.checkPayStatus.bind(
-            api.payment
+            api.subscription
           )
 
           break
@@ -291,11 +309,11 @@ v-dialog(v-model='isOpen', width='600')
           break
 
         case 'Task':
-          this.paymentScriptParams = await api.order.getPaymentScriptParams(
+          this.paymentScriptParams = await api.order.getPaymentScriptParams<PaymentProvider>(
             +this.id,
             provider
           )
-          this.checkPaySatusMethod = api.order.getPaymentStatus.bind(api.payment)
+          this.checkPaySatusMethod = api.order.getPaymentStatus.bind(api.order)
 
           break
 
@@ -333,7 +351,7 @@ v-dialog(v-model='isOpen', width='600')
             typeof provider
           >(vxm.user.lang, provider, this.stockSource || '', this.id)
           this.checkPaySatusMethod = api.stockFile.getPaymentStatus.bind(
-            api.payment
+            api.stockFile
           )
           break
 
@@ -343,7 +361,7 @@ v-dialog(v-model='isOpen', width='600')
     }
 
     async spendManyFromBalance() {
-      await this.beforeStartPayment()
+      if (!(await this.beforeStartPayment())) return
       await api.balance.setBalance()
 
       if (this.total < 0) {
@@ -447,8 +465,105 @@ v-dialog(v-model='isOpen', width='600')
       return vxm.user.user?.currencyId === 1
     }
 
+    get canUserPayWithLavaTop() {
+      return [1, 2, 3].includes(vxm.user.user?.currencyId || 0)
+    }
+
+    get isLavaTopAmountValid() {
+      const amount = Number(this.replenishBalanceAmount)
+      return Number.isFinite(amount) && amount > 0
+    }
+
+    cancelLavaTopPayment() {
+      this.lavaTopAttempt++
+      if (this.lavaTopPending) this.loading = false
+      this.lavaTopPending = false
+    }
+
+    async payWithLavaTop(topUp = false) {
+      if (this.isButtonDisabled || !this.canUserPayWithLavaTop) return
+      if (topUp ? !this.isLavaTopAmountValid : !(this.total > 0)) return
+
+      const attempt = ++this.lavaTopAttempt
+      const purchaseType = this.purchaseType
+      const purchaseId = this.id
+      const amount = Number(this.replenishBalanceAmount)
+      const isCancelled = () => attempt !== this.lavaTopAttempt || !this.isOpen
+      this.lavaTopPending = true
+      this.loading = true
+      let paymentOpened = false
+
+      try {
+        const params = await openLavaTopPayment(async () => {
+          if (!(await this.beforeStartPayment(isCancelled))) return null
+          if (topUp) {
+            return api.balance.getPaymentScriptParams({
+              language: this.lang,
+              currency: this.currencyName,
+              amonth: amount,
+              provider: 'LavaTop',
+            })
+          }
+          await this.getPaymentScriptParams('LavaTop')
+          if (!this.paymentScriptParams) throw new Error('invalid-payment-response')
+          return this.paymentScriptParams as PaymentScriptParams<'LavaTop'>
+        }, isCancelled)
+        if (!params || isCancelled()) return
+        paymentOpened = true
+
+        const statusId = !topUp && ['Order', 'Task'].includes(purchaseType)
+          ? purchaseId
+          : params.documentId
+        const checkStatus = topUp ? api.balance.checkPayStatus : this.checkPaySatusMethod
+        if (!checkStatus) throw new Error('invalid-payment-response')
+        const paid = await checkPaymentStatus(statusId, checkStatus, {
+          trackRobokassaFocus: false,
+          isCancelled,
+        })
+        if (isCancelled()) return
+        if (!paid) {
+          this.$toasted.info(String(this.$t('payment-pending')))
+          return
+        }
+
+        if (topUp) {
+          await api.balance.setBalance()
+          if (isCancelled()) return
+          this.$toasted.success(String(this.$t('balance-topped-up')))
+          if (purchaseType === 'Balance') this.closeModal()
+        } else if (purchaseType === 'Subscription') {
+          this.closeModal()
+          this.$emit('success')
+          this.$toasted.success(String(this.$t('subscribtion-bought')))
+        } else {
+          storage.lastPaymentId = null
+          storage.lastPaymentType = null
+          sessionStorage.removeItem('lastPaymentId')
+          // History supports automatic downloads for processed tasks and stock files.
+          if (!this.withoutDownload && ['Order', 'Stock'].includes(purchaseType)) {
+            storage.lastPaymentId = purchaseType === 'Stock' ? params.documentId : purchaseId
+            storage.lastPaymentType = purchaseType
+          }
+          this.closeModal()
+          this.$router.push({ name: 'History', params: { lang: this.$route.params.lang } })
+        }
+      } catch (error) {
+        if (isCancelled()) return
+        if (['popup-blocked', 'invalid-payment-response'].includes(error.message)) {
+          this.$toasted.error(String(this.$t(error.message)))
+        } else if (paymentOpened) {
+          this.$toasted.info(String(this.$t('payment-pending')))
+        }
+      } finally {
+        if (attempt === this.lavaTopAttempt) {
+          this.lavaTopPending = false
+          this.loading = false
+        }
+      }
+    }
+
     async payWithCard() {
-      await this.beforeStartPayment()
+      if (!(await this.beforeStartPayment())) return
       try {
         await this.getPaymentScriptParams('Robocassa')
 
@@ -486,7 +601,7 @@ v-dialog(v-model='isOpen', width='600')
     // }
 
     async palanishCustomSumm() {
-      await this.beforeStartPayment()
+      if (!(await this.beforeStartPayment())) return
 
       this.paymentScriptParams = (await api.balance.getPaymentScriptParams({
         language: 'ru',
@@ -554,20 +669,22 @@ v-dialog(v-model='isOpen', width='600')
     }
 
     onCloseIFrame() {
-      this.loading = false
+      if (!this.lavaTopPending) this.loading = false
     }
 
     mounted() {
       document.addEventListener('closeRobokassaIframe', this.onCloseIFrame)
     }
 
-    beforeUnmount() {
+    beforeDestroy() {
+      this.cancelLavaTopPayment()
       document.removeEventListener('closeRobokassaIframe', this.onCloseIFrame)
     }
 
     @Watch('isOpen')
     async onModalVisibilityChange(value: boolean) {
       if (!value) {
+        this.cancelLavaTopPayment()
         this.loading = false
       } else {
         this.loadRobokassa()
@@ -589,6 +706,13 @@ v-dialog(v-model='isOpen', width='600')
     "get-solution": "получить решение",
     "replenish-balance": "Пополнить баланс ЛК",
     "instant-pay": "Оплатить с помощью карты",
+    "pay-lavatop": "Оплатить через LavaTop",
+    "top-up-lavatop": "Пополнить через LavaTop",
+    "popup-blocked": "Разрешите открытие новой вкладки для перехода к оплате.",
+    "invalid-payment-response": "Не удалось получить ссылку на оплату. Попробуйте позже.",
+    "payment-pending": "Оплата пока не подтверждена. Проверьте баланс или статус заказа позже.",
+    "balance-topped-up": "Баланс успешно пополнен",
+    "email-error": "Не удалось сохранить email. Проверьте адрес и попробуйте ещё раз.",
     "accept-summ": "пополнить",
     "wrap-btn": "Свернуть",
     "unwrap-btn": "Развернуть",
@@ -611,6 +735,14 @@ v-dialog(v-model='isOpen', width='600')
     "emailPlaceholder": "Enter your e-mail",
     "get-solution": "Get solution",
     "replenish-balance": "Top up your Personal Account balance",
+    "instant-pay": "Pay by card",
+    "pay-lavatop": "Pay with LavaTop",
+    "top-up-lavatop": "Top up with LavaTop",
+    "popup-blocked": "Allow a new tab to open to proceed to payment.",
+    "invalid-payment-response": "Could not get the payment link. Please try again later.",
+    "payment-pending": "Payment has not been confirmed yet. Check your balance or order status later.",
+    "balance-topped-up": "Balance topped up successfully",
+    "email-error": "Could not save your email. Check the address and try again.",
     "accept-summ": "Top up",
     "wrap-btn": "Roll up",
     "unwrap-btn": "Expand",

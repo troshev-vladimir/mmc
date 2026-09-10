@@ -2,7 +2,7 @@
 v-dialog(v-model='isOpen', width='600')
   .top-up-balance
     .top-up-balance__title {{ $t('title') }}
-    v-radio-group(v-model='method', dense, hide-details)
+    v-radio-group(v-model='method', dense, hide-details, :disabled='paymentLoading')
       //- .top-up-balance__method.top-up-balance__method--paypal(
       //-   :class='{ "top-up-balance__method--active": method === "Paypal" }'
       //- )
@@ -72,7 +72,7 @@ v-dialog(v-model='isOpen', width='600')
         v-form
           v-text-field.user-amount(
             :label="`${$t('enter-amount')} (${userCurencySymbol})`"
-            :disabled="method !== 'CryptoCloud'"
+            :disabled="method !== 'CryptoCloud' || paymentLoading"
             v-model.number="selectedAmount"
             type="number"
             inputmode="numeric"
@@ -81,17 +81,43 @@ v-dialog(v-model='isOpen', width='600')
           )
 
         button.button_accent(
-          :disabled='method !== "CryptoCloud" || !selectedAmount',
+          :disabled='method !== "CryptoCloud" || !isValidAmount || paymentLoading',
           @click='payWithCrypto'
         ) {{ $t('go-to-pay') }}
+
+      .top-up-balance__method.top-up-balance__method--lavatop(
+        :class='{ "top-up-balance__method--active": method === "LavaTop" }'
+      )
+        v-radio.radio(:value='"LavaTop"')
+          template(v-slot:label)
+            .top-up-balance__method-title
+              .radio__title LavaTop
+        .top-up-balance__description.mb-2 {{ $t('lavaTopDescription') }}
+
+        v-form
+          v-text-field.user-amount(
+            :label="`${$t('enter-amount')} (${userCurencySymbol})`"
+            :disabled="method !== 'LavaTop' || paymentLoading"
+            v-model.number="selectedAmount"
+            type="number"
+            min="0"
+            inputmode="decimal"
+          )
+
+        button.button_accent(
+          :disabled='method !== "LavaTop" || !isValidAmount || paymentLoading',
+          @click='payWithLavaTop'
+        ) {{ $t(paymentLoading && method === 'LavaTop' ? 'payment-waiting' : 'go-to-pay') }}
 </template>
 
 <script lang="ts">
 import api from "@/api";
 import { vxm } from "@/vuex";
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import getCurrencySymbol from "@/additionally/getCurrencySymbol";
 import getCurrencyName from "@/additionally/getCurrencyName";
+import openLavaTopPayment from "@/additionally/lavaTopPayment";
+import checkPaymentStatus from "@/additionally/makePulling";
 
 interface ApproveData {
   orderID: string;
@@ -103,8 +129,10 @@ interface ApproveActions {
 @Component
 export default class ModalTopUpBalanceByForegin extends Vue {
   @Prop({ type: Boolean }) readonly value!: boolean;
-  method: "Paypal" | "CryptoCloud" = "CryptoCloud";
+  method: "Paypal" | "CryptoCloud" | "LavaTop" = "CryptoCloud";
   selectedAmount = null;
+  paymentLoading = false;
+  paymentAttempt = 0;
   usersPaypal = "";
   usersHash = "";
   alreadeyLoadded = false
@@ -165,7 +193,27 @@ export default class ModalTopUpBalanceByForegin extends Vue {
   }
 
   set isOpen(value) {
+    if (!value) this.cancelPayment();
     this.$emit("input", value);
+  }
+
+  get isValidAmount() {
+    const amount = Number(this.selectedAmount);
+    return Number.isFinite(amount) && amount > 0;
+  }
+
+  @Watch("value")
+  onOpenChanged(value: boolean) {
+    if (!value) this.cancelPayment();
+  }
+
+  cancelPayment() {
+    this.paymentAttempt++;
+    this.paymentLoading = false;
+  }
+
+  beforeDestroy() {
+    this.cancelPayment();
   }
 
   get isPaypalReady() {
@@ -203,6 +251,9 @@ export default class ModalTopUpBalanceByForegin extends Vue {
   // }
 
   payWithCrypto() {
+    if (this.paymentLoading || !this.isValidAmount) return;
+    this.paymentLoading = true;
+    const attempt = ++this.paymentAttempt;
     const windowReference = window.open();
 
     api.balance
@@ -213,10 +264,72 @@ export default class ModalTopUpBalanceByForegin extends Vue {
         provider: "CryptoCloud",
       })
       .then((resp) => {
+        if (attempt !== this.paymentAttempt || !this.isOpen) {
+          windowReference?.close();
+          return;
+        }
         // @ts-expect-error
         windowReference.location = resp?.pay_url;
         this.closeModal();
+      })
+      .catch(() => {
+        windowReference?.close();
+      })
+      .finally(() => {
+        if (attempt === this.paymentAttempt) this.paymentLoading = false;
       });
+  }
+
+  async payWithLavaTop() {
+    if (this.paymentLoading || !this.isValidAmount) return;
+
+    this.paymentLoading = true;
+    const attempt = ++this.paymentAttempt;
+    const isCancelled = () => attempt !== this.paymentAttempt || !this.isOpen;
+    let paymentOpened = false;
+
+    try {
+      const params = await openLavaTopPayment(
+        () => api.balance.getPaymentScriptParams({
+          language: vxm.user.lang,
+          currency: getCurrencyName(vxm.user.user?.currencyId || 2),
+          amonth: Number(this.selectedAmount),
+          provider: "LavaTop",
+        }),
+        isCancelled
+      );
+      if (!params || isCancelled()) return;
+      paymentOpened = true;
+
+      const paid = await checkPaymentStatus(
+        params.documentId,
+        (documentId: number) => api.balance.checkPayStatus(documentId),
+        { trackRobokassaFocus: false, isCancelled }
+      );
+      if (isCancelled()) return;
+
+      if (!paid) {
+        this.$toasted.show(String(this.$t("payment-pending")));
+        return;
+      }
+
+      await api.balance.setBalance();
+      if (isCancelled()) return;
+      this.$toasted.success(String(this.$t("payment-success")), { icon: "check" });
+      this.closeModal();
+    } catch (error) {
+      if (isCancelled()) return;
+      if (error instanceof Error && (
+        error.message === "popup-blocked" ||
+        error.message === "invalid-payment-response"
+      )) {
+        this.$toasted.error(String(this.$t(error.message)));
+      } else if (paymentOpened) {
+        this.$toasted.show(String(this.$t("payment-pending")));
+      }
+    } finally {
+      if (attempt === this.paymentAttempt) this.paymentLoading = false;
+    }
   }
 
   resultMessage(message: string) {
@@ -248,6 +361,12 @@ export default class ModalTopUpBalanceByForegin extends Vue {
     "payPallDescription": "Вы можете пополнить свой личный счет с помощью перевода с вашего счета PayPal. Нажмите на кнопку PAY NOW, перейдите к форме оплаты, введите сумму на которую хотите пополнить баланс и сделайте перевод. Баланс будет пополнен автоматически и отобразится в вашем аккаунте.",
     "payDisscountDescription": "При пополнении баланса на сумму от 100 $(€), мы зачислим вам на счет дополнительно 10%, при сумме от 200 $(€) дополнительно 15%, свыше 500 $(€) дополнительно 25% к сумме пополнения.",
     "cryptoDescription": "Зачисление денежных средств происходит в течение нескольких минут, в некоторых случаях - до часа. Данный функционал связан со спецификой работы системы blockchain. О поступлении денежных средств на счет вам придет уведомление на e-mail.",
+    "lavaTopDescription": "Оплата откроется на странице LavaTop в новой вкладке. После оплаты вернитесь сюда для подтверждения пополнения баланса.",
+    "popup-blocked": "Разрешите открытие новой вкладки для оплаты и попробуйте ещё раз.",
+    "invalid-payment-response": "Не удалось получить ссылку для оплаты. Попробуйте позже.",
+    "payment-waiting": "Ожидаем подтверждения оплаты…",
+    "payment-pending": "Оплата пока не подтверждена. Если вы уже оплатили, проверьте баланс позже.",
+    "payment-success": "Оплата подтверждена. Баланс пополнен.",
     "get-props": "Получить реквизиты",
     "go-to-pay": "Перейти к оплате",
     "enter-amount": "Введите сумму пополнения",
@@ -259,6 +378,12 @@ export default class ModalTopUpBalanceByForegin extends Vue {
     "not-awailable": "temporarily unavailable",
     "payPallDescription": "You can top up your personal account using a transfer from your PayPal account. Click on the PAY NOW button, go to the payment form, enter the amount you want to top up and make the transfer. The balance will be replenished automatically and will be displayed in your account.",
     "cryptoDescription": "Funds will be credited within minutes, in some cases up to an hour. This functionality is related to the specific operation of the blockchain system. You will receive a notification via email regarding the receipt of funds into your account.",
+    "lavaTopDescription": "The LavaTop payment page will open in a new tab. After paying, return here to confirm your balance top-up.",
+    "popup-blocked": "Allow a new payment tab to open and try again.",
+    "invalid-payment-response": "Could not get the payment link. Please try again later.",
+    "payment-waiting": "Waiting for payment confirmation…",
+    "payment-pending": "Payment has not been confirmed yet. If you have already paid, check your balance later.",
+    "payment-success": "Payment confirmed. Your balance has been topped up.",
     "get-props": "get props",
     "go-to-pay": "go to pay",
     "enter-amount": "Enter the amount to be added",
