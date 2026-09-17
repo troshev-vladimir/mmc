@@ -48,6 +48,7 @@ yarn prerender --lang=eu
 ### Dev mode
 ```sh
 yarn serve
+npm run serve
 ```
 
 ### build for production

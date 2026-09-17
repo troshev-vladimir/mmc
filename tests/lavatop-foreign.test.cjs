@@ -6,7 +6,9 @@ const ts = require("typescript");
 const compiler = require("vue-template-compiler");
 
 const source = fs.readFileSync(path.join(__dirname, "../src/components/_modal/ModalTopUpBalanceByForegin.vue"), "utf8");
-const script = compiler.parseComponent(source).script.content;
+const component = compiler.parseComponent(source);
+const script = component.script.content;
+const translations = JSON.parse(component.customBlocks.find((block) => block.type === "i18n").content);
 const { outputText } = ts.transpileModule(script, {
   compilerOptions: {
     experimentalDecorators: true,
@@ -16,14 +18,23 @@ const { outputText } = ts.transpileModule(script, {
   },
 });
 
+const limitsSource = fs.readFileSync(path.join(__dirname, "../src/additionally/lavaTopLimits.ts"), "utf8");
+const limitsCode = ts.transpileModule(limitsSource, {
+  compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2018 },
+}).outputText;
+const limits = {};
+vm.runInNewContext(limitsCode, { exports: limits });
+
 function deferred() {
   let resolve;
   const promise = new Promise((done) => { resolve = done; });
   return { promise, resolve };
 }
 
-function fixture({ paid = true, helperError = null, holdParams = false, holdStatus = false } = {}) {
+function fixture({ paid = true, helperError = null, holdParams = false, holdStatus = false, currencyId = 2, lang = "ru" } = {}) {
   const events = [];
+  const watchers = new Map();
+  const vxm = { user: { lang, user: { currencyId } } };
   const paramsWait = deferred();
   const statusWait = deferred();
   if (!holdParams) paramsWait.resolve();
@@ -40,15 +51,16 @@ function fixture({ paid = true, helperError = null, holdParams = false, holdStat
   };
   const modules = {
     "@/api": api,
-    "@/vuex": { vxm: { user: { lang: "ru", user: { currencyId: 2 } } } },
+    "@/vuex": { vxm },
     "vue-property-decorator": {
       Vue: class {},
       Component: (type) => type,
       Prop: () => () => {},
-      Watch: () => () => {},
+      Watch: (property) => (_target, method) => { watchers.set(property, method); },
     },
-    "@/additionally/getCurrencySymbol": () => "$",
-    "@/additionally/getCurrencyName": () => "USD",
+    "@/additionally/getCurrencySymbol": (id) => ({ 1: "₽", 2: "$", 3: "€" })[id],
+    "@/additionally/getCurrencyName": (id) => ({ 1: "Rub", 2: "Usd", 3: "Eur" })[id],
+    "@/additionally/lavaTopLimits": limits,
     "@/additionally/lavaTopPayment": async (getParams, isCancelled) => {
       events.push(["open"]);
       if (helperError) throw new Error(helperError);
@@ -74,16 +86,21 @@ function fixture({ paid = true, helperError = null, holdParams = false, holdStat
   vm.runInNewContext(outputText, context);
   const modal = new context.exports.default();
   modal.value = true;
-  modal.selectedAmount = 10;
   modal.method = "LavaTop";
-  modal.$t = (key) => key;
+  modal.$t = (key, params = {}) => (translations[lang][key] || key)
+    .replace(/\{(\w+)\}/g, (_match, name) => params[name]);
   modal.$emit = (name, value) => { events.push(["emit", name, value]); modal.value = value; };
   modal.$toasted = {
     show: (key) => events.push(["pending", key]),
     success: (key) => events.push(["success", key]),
     error: (key) => events.push(["error", key]),
   };
-  return { modal, events, paramsWait, statusWait };
+  function setCurrency(id) {
+    vxm.user.user.currencyId = id;
+    assert.ok(watchers.has("userCurrencyId"), "currency changes must update the selected amount");
+    modal[watchers.get("userCurrencyId")]();
+  }
+  return { modal, events, paramsWait, statusWait, setCurrency };
 }
 
 async function flush() {
@@ -103,7 +120,7 @@ async function main() {
     assert.equal(modal.paymentLoading, false);
     const params = events.find((event) => event[0] === "params")[1];
     assert.deepEqual(JSON.parse(JSON.stringify(params)), {
-      language: "ru", currency: "USD", amonth: 10, provider: "LavaTop",
+      language: "ru", currency: "Usd", amonth: 5, provider: "LavaTop",
     });
     assert.deepEqual(events.find((event) => event[0] === "poll"), ["poll", 123, false]);
   }
@@ -118,14 +135,65 @@ async function main() {
   for (const helperError of ["popup-blocked", "invalid-payment-response"]) {
     const { modal, events } = fixture({ helperError });
     await modal.payWithLavaTop();
-    assert.ok(events.some((event) => event[0] === "error" && event[1] === helperError));
+    assert.ok(events.some((event) => event[0] === "error" && event[1] === modal.$t(helperError)));
     assert.equal(modal.paymentLoading, false);
   }
-  for (const amount of [0, -1, Infinity, NaN, null, ""]) {
-    const { modal, events } = fixture();
-    modal.selectedAmount = amount;
-    await modal.payWithLavaTop();
-    assert.equal(events.length, 0, `must reject invalid amount ${amount}`);
+  for (const [currencyId, currency, minimum] of [[1, "RUB", 50], [2, "USD", 5], [3, "EUR", 6]]) {
+    const initial = fixture({ currencyId });
+    assert.equal(initial.modal.selectedAmount, minimum, `${currency} must start with its minimum amount`);
+    assert.equal(initial.modal.lavaTopMinimumAmount, minimum);
+    assert.equal(initial.modal.isValidLavaTopAmount, true);
+    assert.equal(initial.modal.lavaTopAmountHint, "");
+
+    for (const amount of [0, -1, minimum - 0.01, Infinity, NaN, null, "", " ", "invalid"]) {
+      const { modal, events } = fixture({ currencyId });
+      modal.selectedAmount = amount;
+      assert.equal(modal.isValidLavaTopAmount, false);
+      assert.equal(modal.lavaTopAmountHint, `Минимальная сумма оплаты через LavaTop — ${minimum} ${currency}`);
+      await modal.payWithLavaTop();
+      assert.equal(events.length, 0, `must reject invalid ${currency} amount ${amount} before opening a tab`);
+      assert.equal(modal.selectedAmount, amount, "invalid/empty input must not be replaced automatically");
+      modal.method = "CryptoCloud";
+      assert.equal(modal.lavaTopAmountHint, "", "the LavaTop hint must not affect CryptoCloud");
+    }
+    for (const amount of [minimum, minimum + 0.01, String(minimum)]) {
+      const { modal, events } = fixture({ currencyId });
+      modal.selectedAmount = amount;
+      assert.equal(modal.isValidLavaTopAmount, true);
+      assert.equal(modal.lavaTopAmountHint, "");
+      await modal.payWithLavaTop();
+      const params = events.find((event) => event[0] === "params")[1];
+      assert.equal(params.amonth, Number(amount));
+      assert.equal(params.currency, currency[0] + currency.slice(1).toLowerCase());
+    }
+
+    const { modal } = fixture({ currencyId, lang: "en" });
+    modal.selectedAmount = "";
+    assert.equal(modal.lavaTopAmountHint, `The minimum payment amount through LavaTop is ${minimum} ${currency}`);
+    modal.selectedAmount = minimum - 1;
+    assert.equal(modal.isValidAmount, true, "CryptoCloud must still allow a positive amount below the LavaTop minimum");
+  }
+  {
+    const { modal, setCurrency } = fixture({ currencyId: null });
+    assert.equal(modal.selectedAmount, 5, "missing currency must use the USD minimum");
+    for (const [currencyId, minimum] of [[3, 6], [1, 50], [2, 5]]) {
+      modal.selectedAmount = "";
+      setCurrency(currencyId);
+      assert.equal(modal.selectedAmount, minimum);
+      assert.equal(modal.lavaTopMinimumAmount, minimum);
+      assert.equal(modal.isValidLavaTopAmount, true);
+      assert.equal(modal.lavaTopAmountHint, "");
+    }
+  }
+  {
+    const { modal, events, paramsWait, setCurrency } = fixture({ holdParams: true });
+    const request = modal.payWithLavaTop();
+    setCurrency(3);
+    paramsWait.resolve();
+    await request;
+    assert.equal(modal.selectedAmount, 6);
+    assert.equal(modal.paymentLoading, false);
+    assert.ok(!events.some((event) => ["params", "poll", "success", "pending"].includes(event[0])), "changing currency must cancel the previous attempt");
   }
   for (const cancel of [
     (modal) => modal.closeModal(),

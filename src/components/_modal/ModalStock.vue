@@ -94,6 +94,8 @@ v-dialog(v-model='isOpen', width='600')
           v-model='replenishBalanceAmount',
           clearable,
           :label='$t("top-up-summ")',
+          :hint='canUserPayWithLavaTop && !isLavaTopAmountValid ? lavaTopMinimumHint : ""',
+          persistent-hint,
           type='number'
         )
         .preselected-amount
@@ -121,10 +123,13 @@ v-dialog(v-model='isOpen', width='600')
     ) {{ $t('instant-pay') }}
     button.modal-stock__btn.button_accent.mt-2(
       type='button',
-      :disabled='isButtonDisabled',
+      :disabled='isButtonDisabled || !isLavaTopOrderAmountValid',
       v-if='!isBalanceAmountMoreThenPrice && canUserPayWithLavaTop && total > 0',
       @click='payWithLavaTop()'
     ) {{ $t('pay-lavatop') }}
+    p.text-small.mt-2(
+      v-if='!isBalanceAmountMoreThenPrice && canUserPayWithLavaTop && total > 0 && !isLavaTopOrderAmountValid'
+    ) {{ lavaTopMinimumHint }}
 </template>
 
 <script lang="ts">
@@ -138,6 +143,7 @@ v-dialog(v-model='isOpen', width='600')
   import StockLine from './StockLine.vue'
   import checkPaymentStatus from '@/additionally/makePulling'
   import openLavaTopPayment from '@/additionally/lavaTopPayment'
+  import getLavaTopMinimumAmount, { isLavaTopAmountValid } from '@/additionally/lavaTopLimits'
   import { TaskInterface } from '@/interfaces/task'
   import Dtc = TaskInterface.Dtc
   import getCurrencyName from '@/additionally/getCurrencyName'
@@ -193,7 +199,7 @@ v-dialog(v-model='isOpen', width='600')
     lavaTopAttempt = 0
     isDetailsWrapped = true
     replenishBalance = false
-    replenishBalanceAmount = 0
+    replenishBalanceAmount = getLavaTopMinimumAmount(vxm.user.user?.currencyId || 1)
     acception = false
 
     closeModal() {
@@ -470,8 +476,28 @@ v-dialog(v-model='isOpen', width='600')
     }
 
     get isLavaTopAmountValid() {
-      const amount = Number(this.replenishBalanceAmount)
-      return Number.isFinite(amount) && amount > 0
+      return isLavaTopAmountValid(this.replenishBalanceAmount, vxm.user.user?.currencyId || 1)
+    }
+
+    get isLavaTopOrderAmountValid() {
+      return isLavaTopAmountValid(this.total, vxm.user.user?.currencyId || 1)
+    }
+
+    get lavaTopMinimumAmount() {
+      return getLavaTopMinimumAmount(vxm.user.user?.currencyId || 1)
+    }
+
+    get lavaTopMinimumHint() {
+      return String(this.$t('lavatop-minimum-amount', {
+        amount: this.lavaTopMinimumAmount,
+        currency: this.currencyName.toUpperCase(),
+      }))
+    }
+
+    @Watch('lavaTopMinimumAmount')
+    onLavaTopMinimumChanged(minimum: number) {
+      this.cancelLavaTopPayment()
+      this.replenishBalanceAmount = minimum
     }
 
     cancelLavaTopPayment() {
@@ -482,7 +508,7 @@ v-dialog(v-model='isOpen', width='600')
 
     async payWithLavaTop(topUp = false) {
       if (this.isButtonDisabled || !this.canUserPayWithLavaTop) return
-      if (topUp ? !this.isLavaTopAmountValid : !(this.total > 0)) return
+      if (topUp ? !this.isLavaTopAmountValid : !this.isLavaTopOrderAmountValid) return
 
       const attempt = ++this.lavaTopAttempt
       const purchaseType = this.purchaseType
@@ -708,6 +734,7 @@ v-dialog(v-model='isOpen', width='600')
     "instant-pay": "Оплатить с помощью карты",
     "pay-lavatop": "Оплатить через LavaTop",
     "top-up-lavatop": "Пополнить через LavaTop",
+    "lavatop-minimum-amount": "Минимальная сумма оплаты через LavaTop — {amount} {currency}",
     "popup-blocked": "Разрешите открытие новой вкладки для перехода к оплате.",
     "invalid-payment-response": "Не удалось получить ссылку на оплату. Попробуйте позже.",
     "payment-pending": "Оплата пока не подтверждена. Проверьте баланс или статус заказа позже.",
@@ -738,6 +765,7 @@ v-dialog(v-model='isOpen', width='600')
     "instant-pay": "Pay by card",
     "pay-lavatop": "Pay with LavaTop",
     "top-up-lavatop": "Top up with LavaTop",
+    "lavatop-minimum-amount": "The minimum payment amount with LavaTop is {amount} {currency}",
     "popup-blocked": "Allow a new tab to open to proceed to payment.",
     "invalid-payment-response": "Could not get the payment link. Please try again later.",
     "payment-pending": "Payment has not been confirmed yet. Check your balance or order status later.",

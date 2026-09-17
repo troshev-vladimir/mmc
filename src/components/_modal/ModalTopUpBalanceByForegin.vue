@@ -100,12 +100,13 @@ v-dialog(v-model='isOpen', width='600')
             :disabled="method !== 'LavaTop' || paymentLoading"
             v-model.number="selectedAmount"
             type="number"
-            min="0"
+            :min="lavaTopMinimumAmount"
+            :error-messages="lavaTopAmountHint"
             inputmode="decimal"
           )
 
         button.button_accent(
-          :disabled='method !== "LavaTop" || !isValidAmount || paymentLoading',
+          :disabled='method !== "LavaTop" || !isValidLavaTopAmount || paymentLoading',
           @click='payWithLavaTop'
         ) {{ $t(paymentLoading && method === 'LavaTop' ? 'payment-waiting' : 'go-to-pay') }}
 </template>
@@ -118,6 +119,7 @@ import getCurrencySymbol from "@/additionally/getCurrencySymbol";
 import getCurrencyName from "@/additionally/getCurrencyName";
 import openLavaTopPayment from "@/additionally/lavaTopPayment";
 import checkPaymentStatus from "@/additionally/makePulling";
+import getLavaTopMinimumAmount, { isLavaTopAmountValid } from "@/additionally/lavaTopLimits";
 
 interface ApproveData {
   orderID: string;
@@ -130,7 +132,7 @@ interface ApproveActions {
 export default class ModalTopUpBalanceByForegin extends Vue {
   @Prop({ type: Boolean }) readonly value!: boolean;
   method: "Paypal" | "CryptoCloud" | "LavaTop" = "CryptoCloud";
-  selectedAmount = null;
+  selectedAmount: number | string | null = getLavaTopMinimumAmount(vxm.user.user?.currencyId || 2);
   paymentLoading = false;
   paymentAttempt = 0;
   usersPaypal = "";
@@ -142,7 +144,7 @@ export default class ModalTopUpBalanceByForegin extends Vue {
   }
 
   getUserCurrency() {
-    return vxm.user.user?.currencyId || 2;
+    return this.userCurrencyId;
   }
 
   createIntention(e: any) {
@@ -186,7 +188,34 @@ export default class ModalTopUpBalanceByForegin extends Vue {
   }
 
   get userCurencySymbol() {
-    return getCurrencySymbol(vxm.user.user?.currencyId || 1);
+    return getCurrencySymbol(this.userCurrencyId);
+  }
+
+  get userCurrencyId() {
+    return vxm.user.user?.currencyId || 2;
+  }
+
+  get lavaTopMinimumAmount() {
+    return getLavaTopMinimumAmount(this.userCurrencyId);
+  }
+
+  get isValidLavaTopAmount() {
+    return isLavaTopAmountValid(this.selectedAmount, this.userCurrencyId);
+  }
+
+  get lavaTopAmountHint() {
+    return this.method === "LavaTop" && !this.isValidLavaTopAmount
+      ? String(this.$t("lavaTopMinimum", {
+        amount: this.lavaTopMinimumAmount,
+        currency: getCurrencyName(this.userCurrencyId).toUpperCase(),
+      }))
+      : "";
+  }
+
+  @Watch("userCurrencyId")
+  onCurrencyChanged() {
+    this.cancelPayment();
+    this.selectedAmount = this.lavaTopMinimumAmount;
   }
   get isOpen() {
     return this.value;
@@ -260,7 +289,7 @@ export default class ModalTopUpBalanceByForegin extends Vue {
       .getPaymentScriptParams({
         language: "en",
         currency: getCurrencyName(vxm.user.user?.currencyId || 1),
-        amonth: this.selectedAmount || 0,
+        amonth: Number(this.selectedAmount),
         provider: "CryptoCloud",
       })
       .then((resp) => {
@@ -281,7 +310,7 @@ export default class ModalTopUpBalanceByForegin extends Vue {
   }
 
   async payWithLavaTop() {
-    if (this.paymentLoading || !this.isValidAmount) return;
+    if (this.paymentLoading || !this.isValidLavaTopAmount) return;
 
     this.paymentLoading = true;
     const attempt = ++this.paymentAttempt;
@@ -292,7 +321,7 @@ export default class ModalTopUpBalanceByForegin extends Vue {
       const params = await openLavaTopPayment(
         () => api.balance.getPaymentScriptParams({
           language: vxm.user.lang,
-          currency: getCurrencyName(vxm.user.user?.currencyId || 2),
+          currency: getCurrencyName(this.userCurrencyId),
           amonth: Number(this.selectedAmount),
           provider: "LavaTop",
         }),
@@ -362,6 +391,7 @@ export default class ModalTopUpBalanceByForegin extends Vue {
     "payDisscountDescription": "При пополнении баланса на сумму от 100 $(€), мы зачислим вам на счет дополнительно 10%, при сумме от 200 $(€) дополнительно 15%, свыше 500 $(€) дополнительно 25% к сумме пополнения.",
     "cryptoDescription": "Зачисление денежных средств происходит в течение нескольких минут, в некоторых случаях - до часа. Данный функционал связан со спецификой работы системы blockchain. О поступлении денежных средств на счет вам придет уведомление на e-mail.",
     "lavaTopDescription": "Оплата откроется на странице LavaTop в новой вкладке. После оплаты вернитесь сюда для подтверждения пополнения баланса.",
+    "lavaTopMinimum": "Минимальная сумма оплаты через LavaTop — {amount} {currency}",
     "popup-blocked": "Разрешите открытие новой вкладки для оплаты и попробуйте ещё раз.",
     "invalid-payment-response": "Не удалось получить ссылку для оплаты. Попробуйте позже.",
     "payment-waiting": "Ожидаем подтверждения оплаты…",
@@ -379,6 +409,7 @@ export default class ModalTopUpBalanceByForegin extends Vue {
     "payPallDescription": "You can top up your personal account using a transfer from your PayPal account. Click on the PAY NOW button, go to the payment form, enter the amount you want to top up and make the transfer. The balance will be replenished automatically and will be displayed in your account.",
     "cryptoDescription": "Funds will be credited within minutes, in some cases up to an hour. This functionality is related to the specific operation of the blockchain system. You will receive a notification via email regarding the receipt of funds into your account.",
     "lavaTopDescription": "The LavaTop payment page will open in a new tab. After paying, return here to confirm your balance top-up.",
+    "lavaTopMinimum": "The minimum payment amount through LavaTop is {amount} {currency}",
     "popup-blocked": "Allow a new payment tab to open and try again.",
     "invalid-payment-response": "Could not get the payment link. Please try again later.",
     "payment-waiting": "Waiting for payment confirmation…",

@@ -6,7 +6,7 @@ const vm = require('vm');
 const ts = require('typescript');
 const root = path.resolve(__dirname, '..');
 
-function load(file, imports, globals = {}) {
+function load(file, imports, globals = {}, allExports = false) {
   let source = fs.readFileSync(path.join(root, file), 'utf8');
   if (file.endsWith('.vue')) source = source.match(/<script lang="ts">([\s\S]*?)<\/script>/)[1];
   const js = ts.transpileModule(source, { compilerOptions: {
@@ -15,7 +15,7 @@ function load(file, imports, globals = {}) {
   } }).outputText;
   const exports = {};
   vm.runInNewContext(js, { exports, require: id => imports[id] || {}, URL, console, ...globals });
-  return exports.default;
+  return allExports ? exports : exports.default;
 }
 
 function deferred() {
@@ -24,10 +24,10 @@ function deferred() {
   return { promise, resolve };
 }
 
-function fixture(purchaseType = 'Order') {
+function fixture(purchaseType = 'Order', currencyId = 1) {
   const calls = [], toasts = [], routes = [], events = [];
   const params = { documentId: 987, paymentUrl: 'https://payments.example/checkout' };
-  const vxm = { user: { user: { currencyId: 1 }, balance: 0, lang: 'ru' } };
+  const vxm = { user: { user: { currencyId }, balance: 0, lang: 'ru' } };
   const state = { params, status: 'Paid', blocked: false };
   const api = {};
   for (const name of ['payment', 'order', 'subscription', 'mmcStore', 'stockFile', 'balance']) {
@@ -52,6 +52,7 @@ function fixture(purchaseType = 'Order') {
     },
     '@/api': api, '@/vuex': { vxm }, '@/storage': storage,
     '@/additionally/lavaTopPayment': open,
+    '@/additionally/lavaTopLimits': load('src/additionally/lavaTopLimits.ts', {}, {}, true),
     '@/additionally/getCurrencyName': id => ({ 1: 'Rub', 2: 'Usd', 3: 'Eur' }[id]),
     '@/additionally/makePulling': async (id, cb, options) => {
       assert.equal(options.trackRobokassaFocus, false);
@@ -63,8 +64,9 @@ function fixture(purchaseType = 'Order') {
   Object.assign(modal, {
     value: true, id: 123, purchaseType, total: 100, options: [{ id: 'module-1' }],
     errors: [], mmcFlashKey: 'test-key', stockSource: 'test-stock',
-    acception: true, replenishBalanceAmount: 50, withoutDownload: false,
-    $t: key => key, $route: { params: { lang: 'ru' } },
+    acception: true, withoutDownload: false,
+    $t: (key, params) => params ? `${key}:${JSON.stringify(params)}` : key,
+    $route: { params: { lang: 'ru' } },
     $router: { push: route => routes.push(route) },
     $toasted: Object.fromEntries(['success', 'info', 'error'].map(kind => [kind, message => toasts.push([kind, message])])),
     $emit: (name, value) => { events.push([name, value]); if (name === 'input') modal.value = value; },
@@ -73,6 +75,56 @@ function fixture(purchaseType = 'Order') {
 }
 
 async function run() {
+  for (const [currencyId, minimum, currency] of [[1, 50, 'RUB'], [2, 5, 'USD'], [3, 6, 'EUR']]) {
+    const f = fixture('Order', currencyId);
+    assert.equal(f.modal.replenishBalanceAmount, minimum, `${currency} default`);
+    assert.equal(f.modal.isLavaTopAmountValid, true);
+    assert.equal(f.modal.lavaTopMinimumHint,
+      `lavatop-minimum-amount:${JSON.stringify({ amount: minimum, currency })}`);
+
+    for (const amount of [minimum - 0.01, 0, -1, '', null, 'invalid', NaN, Infinity]) {
+      f.modal.replenishBalanceAmount = amount;
+      assert.equal(f.modal.isLavaTopAmountValid, false);
+      await f.modal.payWithLavaTop(true);
+      assert.equal(f.calls.length, 0, `${currency}: invalid top-up must not open a window or create a payment`);
+    }
+    f.modal.total = minimum - 0.01;
+    assert.equal(f.modal.isLavaTopOrderAmountValid, false);
+    await f.modal.payWithLavaTop();
+    assert.equal(f.calls.length, 0, `${currency}: direct payment also observes the minimum`);
+
+    for (const amount of [minimum, minimum + 0.01]) {
+      const topUp = fixture('Balance', currencyId);
+      topUp.modal.replenishBalanceAmount = amount;
+      await topUp.modal.payWithLavaTop(true);
+      assert.equal(topUp.calls.find(c => c[1] === 'create')[2][0].amonth, amount);
+    }
+    const order = fixture('Order', currencyId);
+    order.modal.total = minimum;
+    await order.modal.payWithLavaTop();
+    assert.ok(order.calls.some(c => c[1] === 'create'), `${currency}: direct payment at the minimum is allowed`);
+  }
+
+  const changedCurrency = fixture();
+  changedCurrency.modal.replenishBalanceAmount = 100;
+  changedCurrency.vxm.user.user.currencyId = 3;
+  changedCurrency.modal.onLavaTopMinimumChanged(changedCurrency.modal.lavaTopMinimumAmount);
+  assert.equal(changedCurrency.modal.replenishBalanceAmount, 6);
+
+  const changing = fixture('Balance', 2), currencyEmailReply = deferred();
+  changing.modal.isEmailrequired = true;
+  changing.modal.email = 'buyer@example.test';
+  changing.api.order.changeEmail = () => currencyEmailReply.promise;
+  const changingWork = changing.modal.payWithLavaTop(true);
+  changing.vxm.user.user.currencyId = 3;
+  changing.modal.onLavaTopMinimumChanged(changing.modal.lavaTopMinimumAmount);
+  currencyEmailReply.resolve(true);
+  await changingWork;
+  assert.equal(changing.modal.replenishBalanceAmount, 6);
+  assert.equal(changing.modal.loading, false);
+  assert.equal(changing.calls.some(c => c[1] === 'create'), false,
+    'changing currency must not submit the old USD minimum as a EUR amount');
+
   // IDs differ deliberately: an order/task ID must not be replaced by the payment ID.
   for (const [type, apiName, statusId] of [
     ['Order', 'payment', 123], ['Task', 'order', 123],
