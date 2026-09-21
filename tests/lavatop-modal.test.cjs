@@ -24,7 +24,7 @@ function deferred() {
   return { promise, resolve };
 }
 
-function fixture(purchaseType = 'Order', currencyId = 1) {
+function fixture(purchaseType = 'Order', currencyId = 1, hostname = 'mmcflash.ru') {
   const calls = [], toasts = [], routes = [], events = [];
   const params = { documentId: 987, paymentUrl: 'https://payments.example/checkout' };
   const vxm = { user: { user: { currencyId }, balance: 0, lang: 'ru' } };
@@ -42,7 +42,7 @@ function fixture(purchaseType = 'Order', currencyId = 1) {
   api.order.changeEmail = async () => true;
   api.authorize = { getUser: async () => ({}) };
   const popup = { opener: {}, closed: false, location: { href: '' }, close() { this.closed = true; } };
-  const browserWindow = { open() { calls.push(['window', 'open']); return state.blocked ? null : popup; } };
+  const browserWindow = { location: { hostname }, open() { calls.push(['window', 'open']); return state.blocked ? null : popup; } };
   const open = load('src/additionally/lavaTopPayment.ts', {}, { window: browserWindow });
   const storage = {};
   const Modal = load('src/components/_modal/ModalStock.vue', {
@@ -59,7 +59,7 @@ function fixture(purchaseType = 'Order', currencyId = 1) {
       const status = await cb(id);
       return !options.isCancelled() && status === 'Paid';
     },
-  }, { sessionStorage: { removeItem() {} } });
+  }, { window: browserWindow, sessionStorage: { removeItem() {} } });
   const modal = new Modal();
   Object.assign(modal, {
     value: true, id: 123, purchaseType, total: 100, options: [{ id: 'module-1' }],
@@ -75,6 +75,26 @@ function fixture(purchaseType = 'Order', currencyId = 1) {
 }
 
 async function run() {
+  for (const hostname of ['mmcflash.eu', 'www.mmcflash.eu', 'localhost']) {
+    for (const purchaseType of ['Balance', 'Order']) {
+      const rub = fixture(purchaseType, 1, hostname);
+      assert.equal(rub.modal.canUserTopUpWithLavaTop, false);
+      await rub.modal.payWithLavaTop(true);
+      assert.equal(rub.calls.length, 0, `${hostname}: RUB top-up must not open a tab or create a payment`);
+      assert.equal(rub.modal.canUserPayWithCard, true);
+    }
+    for (const currencyId of [2, 3]) {
+      const foreign = fixture('Balance', currencyId, hostname);
+      assert.equal(foreign.modal.canUserTopUpWithLavaTop, true);
+      await foreign.modal.payWithLavaTop(true);
+      assert.ok(foreign.calls.some(c => c[0] === 'balance' && c[1] === 'create'));
+    }
+    const direct = fixture('Order', 1, hostname);
+    await direct.modal.payWithLavaTop();
+    assert.ok(direct.calls.some(c => c[0] === 'payment' && c[1] === 'create'),
+      'the top-up restriction must not change direct purchase payments');
+  }
+
   for (const [currencyId, minimum, currency] of [[1, 50, 'RUB'], [2, 5, 'USD'], [3, 6, 'EUR']]) {
     const f = fixture('Order', currencyId);
     assert.equal(f.modal.replenishBalanceAmount, minimum, `${currency} default`);

@@ -89,12 +89,12 @@ v-dialog(v-model='isOpen', width='600')
         .replenish-balance__title {{ $t('balance-in') }}
           |
           span.title_accent MMC flash
-        .replenish-balance__description {{ $t("replenish-description") }}
+        .replenish-balance__description(v-if='showTopUpBonus') {{ $t("replenish-description") }}
         v-text-field(
           v-model='replenishBalanceAmount',
           clearable,
           :label='$t("top-up-summ")',
-          :hint='canUserPayWithLavaTop && !isLavaTopAmountValid ? lavaTopMinimumHint : ""',
+          :hint='canUserTopUpWithLavaTop && !isLavaTopAmountValid ? lavaTopMinimumHint : ""',
           persistent-hint,
           type='number'
         )
@@ -112,7 +112,7 @@ v-dialog(v-model='isOpen', width='600')
         ) {{ $t('accept-summ') }}
         button.modal-stock__btn.button_accent.mt-2(
           type='button',
-          v-if='canUserPayWithLavaTop',
+          v-if='canUserTopUpWithLavaTop',
           :disabled='isButtonDisabled || !isLavaTopAmountValid',
           @click='payWithLavaTop(true)'
         ) {{ $t('top-up-lavatop') }}
@@ -199,6 +199,8 @@ v-dialog(v-model='isOpen', width='600')
     lavaTopAttempt = 0
     isDetailsWrapped = true
     replenishBalance = false
+    // Установить true, чтобы снова показывать текст о бонусах за пополнение.
+    showTopUpBonus = false
     replenishBalanceAmount = getLavaTopMinimumAmount(vxm.user.user?.currencyId || 1)
     acception = false
 
@@ -475,6 +477,12 @@ v-dialog(v-model='isOpen', width='600')
       return [1, 2, 3].includes(vxm.user.user?.currencyId || 0)
     }
 
+    get canUserTopUpWithLavaTop() {
+      // Match the site selection in App: non-RU hosts, including localhost, use EU.
+      const isEuSite = !window.location.hostname.includes('.ru')
+      return this.canUserPayWithLavaTop && !(isEuSite && vxm.user.user?.currencyId === 1)
+    }
+
     get isLavaTopAmountValid() {
       return isLavaTopAmountValid(this.replenishBalanceAmount, vxm.user.user?.currencyId || 1)
     }
@@ -508,6 +516,7 @@ v-dialog(v-model='isOpen', width='600')
 
     async payWithLavaTop(topUp = false) {
       if (this.isButtonDisabled || !this.canUserPayWithLavaTop) return
+      if (topUp && !this.canUserTopUpWithLavaTop) return
       if (topUp ? !this.isLavaTopAmountValid : !this.isLavaTopOrderAmountValid) return
 
       const attempt = ++this.lavaTopAttempt
