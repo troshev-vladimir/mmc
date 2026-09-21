@@ -763,7 +763,7 @@ v-dialog(v-model='isOpen', width='600')
     "get-solution": "Get solution",
     "replenish-balance": "Top up your Personal Account balance",
     "instant-pay": "Pay by card",
-    "pay-lavatop": "Pay with LavaTop",
+    "pay-lavatop": "PAY WITH VISA, MASTERCARD, etc.",
     "top-up-lavatop": "Top up with LavaTop",
     "lavatop-minimum-amount": "The minimum payment amount with LavaTop is {amount} {currency}",
     "popup-blocked": "Allow a new tab to open to proceed to payment.",
