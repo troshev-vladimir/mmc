@@ -1,6 +1,6 @@
 <template>
   <div class="promobar">
-    <div class="content">
+    <div v-if="showRegistrationPromotion" class="content">
       <h2 class="promobar__title" v-html="$t('title')"></h2>
       <p class="promobar__text">{{ $t("text") }} {{ promotionEndDate }}</p>
     </div>
@@ -20,6 +20,12 @@
 import { vxm } from '@/vuex';
 
 export default {
+  data() {
+    return {
+      // Установить true, чтобы вернуть текст скидки и срок действия акции.
+      showRegistrationPromotion: false,
+    };
+  },
   computed: {
     promotionEndDate() {
       const curr = new Date();
@@ -56,8 +62,11 @@ export default {
     display: inline-block;
     align-self: center;
     margin: 0;
-    margin-top: 20px;
     background-color: #e31e24;
+  }
+
+  .content + button {
+    margin-top: 20px;
   }
 
   &__text {
