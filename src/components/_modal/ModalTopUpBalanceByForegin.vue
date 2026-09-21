@@ -408,7 +408,7 @@ export default class ModalTopUpBalanceByForegin extends Vue {
     "not-awailable": "temporarily unavailable",
     "payPallDescription": "You can top up your personal account using a transfer from your PayPal account. Click on the PAY NOW button, go to the payment form, enter the amount you want to top up and make the transfer. The balance will be replenished automatically and will be displayed in your account.",
     "cryptoDescription": "Funds will be credited within minutes, in some cases up to an hour. This functionality is related to the specific operation of the blockchain system. You will receive a notification via email regarding the receipt of funds into your account.",
-    "lavaTopDescription": "The LavaTop payment page will open in a new tab. After paying, return here to confirm your balance top-up.",
+    "lavaTopDescription": "The LavaTop payment system page will open in a new tab. Funds may take up to 30 minutes to arrive. After paying, return here to confirm your balance top-up.",
     "lavaTopMinimum": "The minimum payment amount through LavaTop is {amount} {currency}",
     "popup-blocked": "Allow a new payment tab to open and try again.",
     "invalid-payment-response": "Could not get the payment link. Please try again later.",
