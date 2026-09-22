@@ -124,11 +124,11 @@ v-dialog(v-model='isOpen', width='600')
     button.modal-stock__btn.button_accent.mt-2(
       type='button',
       :disabled='isButtonDisabled || !isLavaTopOrderAmountValid',
-      v-if='!isBalanceAmountMoreThenPrice && canUserPayWithLavaTop && total > 0',
+      v-if='!isBalanceAmountMoreThenPrice && canUserPayOrderWithLavaTop && total > 0',
       @click='payWithLavaTop()'
     ) {{ $t('pay-lavatop') }}
     p.text-small.mt-2(
-      v-if='!isBalanceAmountMoreThenPrice && canUserPayWithLavaTop && total > 0 && !isLavaTopOrderAmountValid'
+      v-if='!isBalanceAmountMoreThenPrice && canUserPayOrderWithLavaTop && total > 0 && !isLavaTopOrderAmountValid'
     ) {{ lavaTopMinimumHint }}
 </template>
 
@@ -483,6 +483,10 @@ v-dialog(v-model='isOpen', width='600')
       return this.canUserPayWithLavaTop && !(isEuSite && vxm.user.user?.currencyId === 1)
     }
 
+    get canUserPayOrderWithLavaTop() {
+      return this.canUserPayWithLavaTop && (!this.replenishBalance || this.canUserTopUpWithLavaTop)
+    }
+
     get isLavaTopAmountValid() {
       return isLavaTopAmountValid(this.replenishBalanceAmount, vxm.user.user?.currencyId || 1)
     }
@@ -516,7 +520,7 @@ v-dialog(v-model='isOpen', width='600')
 
     async payWithLavaTop(topUp = false) {
       if (this.isButtonDisabled || !this.canUserPayWithLavaTop) return
-      if (topUp && !this.canUserTopUpWithLavaTop) return
+      if (topUp ? !this.canUserTopUpWithLavaTop : !this.canUserPayOrderWithLavaTop) return
       if (topUp ? !this.isLavaTopAmountValid : !this.isLavaTopOrderAmountValid) return
 
       const attempt = ++this.lavaTopAttempt

@@ -82,14 +82,28 @@ async function run() {
       await rub.modal.payWithLavaTop(true);
       assert.equal(rub.calls.length, 0, `${hostname}: RUB top-up must not open a tab or create a payment`);
       assert.equal(rub.modal.canUserPayWithCard, true);
+      if (purchaseType === 'Order') {
+        rub.modal.onRplenishBalance();
+        assert.equal(rub.modal.replenishBalance, true);
+        await rub.modal.payWithLavaTop();
+        assert.equal(rub.calls.length, 0, 'direct payment must not bypass the restriction in top-up mode');
+        assert.equal(rub.modal.canUserPayOrderWithLavaTop, false,
+          'RUB top-up from an order must also hide the adjacent direct-payment button and hint');
+        rub.modal.closeModal();
+        rub.modal.value = true;
+        assert.equal(rub.modal.canUserPayOrderWithLavaTop, false,
+          'reopening an expanded RUB top-up form must keep LavaTop hidden');
+      }
     }
     for (const currencyId of [2, 3]) {
       const foreign = fixture('Balance', currencyId, hostname);
       assert.equal(foreign.modal.canUserTopUpWithLavaTop, true);
+      assert.equal(foreign.modal.canUserPayOrderWithLavaTop, true);
       await foreign.modal.payWithLavaTop(true);
       assert.ok(foreign.calls.some(c => c[0] === 'balance' && c[1] === 'create'));
     }
     const direct = fixture('Order', 1, hostname);
+    assert.equal(direct.modal.canUserPayOrderWithLavaTop, true);
     await direct.modal.payWithLavaTop();
     assert.ok(direct.calls.some(c => c[0] === 'payment' && c[1] === 'create'),
       'the top-up restriction must not change direct purchase payments');
