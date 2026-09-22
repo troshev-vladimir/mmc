@@ -95,7 +95,7 @@ export default class TheMmcOrderCopy extends Vue {
   get isKey() {
     if (this.isKeySelected) {
       return this.modules.filter((el: MmcStoreInterface.Module) => {
-        return !["MmcStoreHw"].includes(el.id)
+        return !["MmcKeyWh", "61", "MMCKeyDelivery"].includes(el.id);
       }).length;
     } else {
       return this.key.length;
@@ -111,7 +111,7 @@ export default class TheMmcOrderCopy extends Vue {
   }
 
   get isKeySelectedWithModule() {
-    return this.isKeySelected ? this.modules.length >= 2 : this.isKeyExistsOrSelectedToBy && this.isKey;
+    return this.isKeySelected ? this.isKey > 0 : this.isKeyExistsOrSelectedToBy && this.isKey;
   }
 
   get isDisabledButton() {
@@ -137,13 +137,15 @@ export default class TheMmcOrderCopy extends Vue {
   }
 
   removeModule(id: string) {
-    if (id === 'MmcStoreHw') {
+    if (id === 'MmcKeyWh') {
       this.$emit("remove-module", 'MMCKeyDelivery');
     }
     this.$emit("remove-module", id);
   }
 
   sendOrder() {
+    if (this.isDisabledButton) return;
+
     if (!vxm.user.user?.emailConfirmed) {
       this.emailUnconfirmed = true;
       return;
