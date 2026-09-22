@@ -66,7 +66,7 @@ v-dialog(v-model='isOpen', width='600')
                 src='/img/balance/payment-methods/cryptocloud.svg',
                 alt="cryptocloud"
               )
-              .radio__title CryptoCloud
+              .radio__title Payment with cryptocurrency
         .top-up-balance__description.mb-2 {{ $t('cryptoDescription') }}
 
         v-form
@@ -91,7 +91,7 @@ v-dialog(v-model='isOpen', width='600')
         v-radio.radio(:value='"LavaTop"')
           template(v-slot:label)
             .top-up-balance__method-title
-              .radio__title LavaTop
+              .radio__title Payment by Visa, Mastercard, etc.
         .top-up-balance__description.mb-2 {{ $t('lavaTopDescription') }}
 
         v-form
